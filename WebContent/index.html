@@ -1,58 +1,97 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="ISO-8859-1">
-<title>WEB-booking</title>
-<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-<link rel="stylesheet" type="text/css" href="css/index.css">
-<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
-<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+	<title>WEB-booking</title>
+	<meta charset="utf-8">
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+	<link rel="stylesheet" type="text/css" href="css/index.css">
+	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+	<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+
+	<script src="jquery-3.3.1.min.js"></script>
+	<script src="js/login.js"></script>
 </head>
 <body>
 
     <div class="container">
 		<div class="row">
-			<div class="panel panel-primary">
+			<div >
 				<div class="panel-body">
-					<form method="POST" action="#" role="form">
+					<table>
+					<form id="register-form">
 						<div class="form-group">
 							<h2>Create account</h2>
                         </div>
                         <div class="form-group">
-							<label class="control-label" for="signupEmail">Email</label>
-							<input id="username" type="email" maxlength="50" class="form-control">
+							<tr>
+								<td><label class="control-label" for="signupEmail">Email: </label></td>
+							</tr>
+							<tr>
+								<td><input id="username" name="username" type="email" maxlength="50" class="form-control"></td>
+							    <td><p id="errUsername" style="color: red"></p></td> 
+							</tr>												
 						</div>
 						<div class="form-group">
-							<label class="control-label" for="signupFirstName">First name</label>
-							<input id="firstName" type="text" maxlength="50" class="form-control">
+							<tr>
+								<td><label class="control-label" for="signupFirstName">First name</label></td>
+							</tr>
+							<tr>
+								<td><input id="firstName" name="firstName" type="text" maxlength="50" class="form-control"></td>
+								<td><p id="errfirstName" style="color: red"></p></td>
+					    	</tr>
                         </div>
                         <div class="form-group">
-							<label class="control-label" for="signupLastName">Last name</label>
-							<input id="signupLastName" type="text" maxlength="50" class="form-control">
+							<tr>
+								<td><label class="control-label" for="signupLastName">Last name</label></td>
+							</tr>
+						    <tr>
+								<td><input id="lastName" name="lastName" type="text" maxlength="50" class="form-control"></td>
+								<td><p id="errlastName" style="color: red"></p></td>
+							</tr>	
 						</div>
 						<div class="form-group">
-                            <label class="control-label" for="signupGender">Gender</label>
-                            <p></p>
-                            <label class="radio-inline">
-                                 <input type="radio" name="gender" id="female">Female
-                            </label>
-                            <label class="radio-inline">
-                                 <input type="radio" name="gender" id="male">Male
-                            </label>
+							<tr>
+								<td><label class="control-label" for="signupGender">Gender</label></td>
+							</tr>
+                            <tr>
+								<td><input type="radio" name="female" id="female">Female
+								<input type="radio" name="male" id="male">Male</td>	
+								<td><p id="errGender" style="color: red"></p></td>														   						
+							</tr>
 						</div>
 						<div class="form-group">
-							<label class="control-label" for="signupPassword">Password</label>
-							<input id="signupPassword" type="password" maxlength="25" class="form-control" placeholder="at least 6 characters" length="40">
+							<tr>
+								<td><label class="control-label" for="signupPassword">Password</label></td>
+							</tr>
+							<tr>
+								<td><input id="signupPassword" name="signupPassword" type="password" maxlength="25" class="form-control" placeholder="at least 6 characters" length="40"></td>
+							    <td><p id="errPass" style="color: red"></p></td>
+							</tr>
 						</div>
 						<div class="form-group">
-							<label class="control-label" for="signupPasswordagain">Password again</label>
-							<input id="signupPasswordagain" type="password" maxlength="25" class="form-control">
+							<tr>
+								<td><label class="control-label" for="signupPasswordagain">Password again</label></td>
+							</tr>
+							<tr>
+								<td><input id="signupPasswordagain" name = "signupPasswordAgain" type="password" maxlength="25" class="form-control"></td>
+								<td><p id="errPassA" style="color: red"></p></td>
+							</tr>
 						</div>
 						<div class="form-group">
-							<button id="signupSubmit" type="submit" class="btn btn-info btn-block">Create your account</button>
+							<tr class="blank_row">
+								<td colspan="2"></td>
+							</tr>
+							<tr>
+							    <td><button id="signupSubmit" type="submit" class="btn btn-info btn-block">Create your account</button></td>
+							</tr>
 						</div>
-						<p></p>Already have an account? <a href="login.html">Sign in</a></p>
+						<tr>
+							<td>
+								<p></p>Already have an account? <a href="login.html">Sign in</a></p>
+							</td>
+						</tr>
 					</form>
+				</table>
 				</div>
 			</div>
 		</div>

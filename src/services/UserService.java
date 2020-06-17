@@ -1,5 +1,7 @@
 package services;
 
+import java.util.Collection;
+
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -7,8 +9,10 @@ import javax.servlet.http.HttpSession;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.MediaType;
@@ -49,7 +53,7 @@ public class UserService {
 		User u = (User) users.addUser(user);		                    // dodajem jednog usera
 		
 		if(u == null) {
-			return Response.status(400).entity("Uneti username vec postoji.").build();
+			return Response.status(400).entity("Uneti username vec postoji!.").build();
 		}
 		return  Response.status(200).build();
 	}
@@ -97,8 +101,45 @@ public class UserService {
 	}
 	
 	
+	@GET                  
+	@Path("/getActive")
+	@Produces(MediaType.APPLICATION_JSON)
+	public User getActiveUser() {            //iz sesije ucitavam ulogovanog korisnika
+		User u;
+		try {
+			u = (User) request.getSession(false).getAttribute("user");
+			return u;
+		} catch (NullPointerException e) {
+			return null;	
+		}
+	}
 	
 	
+	
+	@GET
+	@Path("/searchUsers")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Collection<User> searchUsers(@QueryParam("username") String username,
+			                            @QueryParam("gender") String gender,
+			                            @QueryParam("role") String role){
+		System.out.println("***SEARCH USERS***");
+		UserDAO users = (UserDAO) servletContext.getAttribute("users");
+		Collection<User> ret = users.searchUser(username, gender, role);
+		
+		return ret;
+	}
+	
+	@PUT
+	@Path("/")
+	public Response updateUser(User u) {
+		System.out.println("***UPDATE USER***");
+		System.out.println(u.getUsername());
+		UserDAO users = (UserDAO) servletContext.getAttribute("users");
+		users.updateUser(u);
+		HttpSession session = request.getSession();
+		session.setAttribute("user", u);
+		return Response.status(200).build();
+	}
 	
 	
    

@@ -1,6 +1,6 @@
 package beans;
 
-import java.util.Date;
+
 
 public class Reservation {
 	
@@ -17,6 +17,7 @@ public class Reservation {
 	public Reservation() {
 		super();
 		this.nightsNumber = 1;
+		this.finalPrice = 0;
 	}
 
 	

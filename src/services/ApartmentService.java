@@ -29,7 +29,7 @@ public class ApartmentService {
 	@PostConstruct
 	public void init() {
 		if(servletContext.getAttribute("apartments") == null) {
-			String p = servletContext.getRealPath("");   //preuzimam putanju
+			String p = servletContext.getRealPath("")+"/data";                
 			servletContext.setAttribute("apartments", new ApartmentDAO(p));
 		}
 	}
@@ -42,8 +42,8 @@ public class ApartmentService {
 		System.out.println("*****ADD APARTMENT*****");
 		
 		ApartmentDAO apartments = (ApartmentDAO) servletContext.getAttribute("apartments");
-		//apartments.addApartment(apartment);
-		apartments.loadApartmnets();
+		apartments.addApartment(apartment);
+		//apartments.loadApartmnets();
 		return true;
 		
 	}

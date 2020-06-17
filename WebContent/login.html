@@ -9,26 +9,42 @@
      
      <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
      <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+     <script src="jquery-3.3.1.min.js"></script>
+     <script src="js/login.js"></script>
+
 </head>
 <body>
 
     <div class="wrapper fadeInDown">
         <div id="formContent">
-          <!-- Tabs Titles -->
-      
-          <!-- Login Form -->
-          <form>
-            <input type="text" id="email" class="fadeIn second" name="login" placeholder="email">
-            <input type="text" id="password" class="fadeIn third" name="login" placeholder="password">
-            <input type="submit" class="fadeIn fourth" value="Log In">
+          <table>
+          <form id="login-form">
+            <div class="form-group">
+							<h2>Welcome back!</h2>
+            </div>
+            <tr>
+            <input type="text" id="email" class="fadeIn second" name="email" placeholder="email">
+            </tr>
+            <tr>
+            <p id="errUsername" style="color: red"></p>
+            </tr>
+            <tr>
+            <input type="text" id="password" class="fadeIn third" name="password" placeholder="password">
+            </tr>
+            <tr>
+              <p id="errPassword" style="color: red"></p>
+            </tr>    
+            <tr>
+              <input type="submit" value="Log In"> 
+            </tr>
+            <tr>
+              <p id="err" style="color: red"></p>
+            </tr>
           </form>
-      
-          
-      
+        </table>     
         </div>
       </div>
-
-
+    
 
 
 </body>

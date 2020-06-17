@@ -1,7 +1,10 @@
 [
-
-
-
-
+ {"username" : "admin",
+  "password" : "admin",
+  "firstName" : "jeka",
+  "lastName" : "dragisic",
+  "gender" : "female",
+  "role" : "ADMIN"
+ }
 
 ]

@@ -2,7 +2,7 @@ package beans;
 
 public class Amenties {
 	
-	private int id;
+	private long id;
 	private String name;
 	private String description;
 	
@@ -10,18 +10,18 @@ public class Amenties {
 		super();
 	}
 
-	public Amenties(int id, String name, String description) {
+	public Amenties(long id, String name, String description) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.description = description;
 	}
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 

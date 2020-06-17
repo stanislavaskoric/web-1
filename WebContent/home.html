@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+     <meta charset="utf-8">
+     <title>WEB-booking</title>    
+         
+     <script src="jquery-3.3.1.min.js"></script>
+     <script src="js/home.js"></script>
+     <script src="js/admin.js"></script>
+     
+     
+     <link rel="stylesheet" type="text/css" href="css/home.css">
+     <!-- Latest compiled and minified CSS -->
+     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+      <!-- Latest compiled JavaScript for bootstrap-->
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+ 
+</head>
+<body>
+    
+     <!-- NAVBAR -->
+      <ul id="homenavbar" class="homenavbar">
+        <li class="nav" id="pocetna"><a>HOME</a></li>
+        <li class="nav"  id="li_logout" hidden="true"><a href="login.html">LOG OUT</a></li>
+        <li class="nav"  id="li_login"><a href="login.html">LOGIN</a></li>
+       <li class="nav"  id="li_signup"><a href="index.html">SIGN UP</a></li>
+     </ul>
+
+
+    <!-- SIDEBAR -->
+      <ul id="homesidebar" class="homesidebar">
+        <div id="admin">
+	        <li class="str" id="li_adminProfil"><a>Moj profil</a></li>
+	        <li class="str" id="li_search"><a>Pretrazi korisnike</a></li>
+        </div>
+      </ul> 
+      
+ 
+    <!-- PRETRAGA KORISNIKA -->
+    <div id="dsearchUsers" hidden="true" >
+    <form>
+        <div id="pretraga_korisnika">
+            <input type="text" id="searchUsername" placeholder="Unesite ime...">
+            <input type="text" id="searchGender" placeholder="Unesite pol...">
+            <input type="text" id="searchRole" placeholder="Unesite ulogu...">
+            <input type="button" id="searchButton" value="pretrazi">
+        </div>
+        <table id="tabela_korisnika">
+            <thead>
+                <tr>
+                    <th>Korisnicko ime</th>
+                    <th>Ime</th>
+                    <th>Prezime</th>
+                    <th>Pol</th>
+                    <th>Uloga</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+       </form>
+    </div>
+    
+    
+    <!-- IZMENA PROFILA -->
+     <div id="adminProfil" hidden= "true">
+         <form>
+            <table id="adminTable">
+                <tr>
+                   <th>Korisnicko ime:</th>
+                   <td><p id="admin_username"></p></td>
+                </tr>
+                <tr id="admin_change1">
+                   <th>Ime:</th>
+                   <td id="admin_firstname"></td>
+                </tr>
+                <tr id="admin_change2">
+                  <th>Prezime:</th>
+                  <td id="admin_lastname"></td>
+                </tr>
+                <tr id="admin_change3">
+                  <th>Lozinka:</th>
+                  <td id="admin_password"></td>
+                </tr>                
+            </table>
+         </form>
+     </div>
+     
+     <!-- MODALNI IZMENA IMENA, PREZIMENA -->
+       <div id="myAdminModal" class="modal" tabindex="-1" role="dialog" hidden="true">
+       <div class="modal-dialog" role="document">
+         <div class="modal-content">
+           <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                   <span aria-hidden="true">&times;</span>
+              </button>
+           </div>
+           <div class="modal-body" id="firstLastBody" hidden=true">
+              <table>
+		          <form>
+		              <tr>
+		                  <th id="inputThChange"></th>
+		              </tr>
+		              <tr>
+		                  <td><input type="text" name="iNaziv" id="modalChangeAdmin" autofocus ></td>
+		              </tr>
+		              <tr>
+		                 <td><p id="modalChangeErr"  style="color: red"></p></td>
+		              </tr>
+		        </form>
+		       </table>
+           </div>
+            <div class="modal-body" id="passwordBody" hidden="true">
+              <table>
+		          <form>
+		              <tr>
+		                  <th>Unesite novu lozinku:</th>
+		              </tr>
+		              <tr>
+		                  <td><input type="password" name="iNaziv" id="modalChangePassword" autofocus ></td>
+		              </tr>
+		                <tr>
+		                  <th>Ponovite lozinku:</th>
+		              </tr>
+		              <tr>
+		                  <td><input type="password" name="iNaziv" id="modalChangePassword2" ></td>
+		              </tr>
+		              <tr>
+		                 <td><p id="modalChangeErr2"  style="color: red"></p></td>
+		              </tr>
+		        </form>
+		       </table>
+           </div>
+           <div class="modal-footer">
+               <button type="button" class="btn btn-primary" id="button_changeAdmin">Sacuvaj izmenu</button>
+           </div>
+         </div>
+        </div>
+       </div>
+     </div>
+    
+    
+    
+    
+    
+    
+    
+    
+</body>
+</html>
