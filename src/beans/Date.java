@@ -8,6 +8,10 @@ public class Date {
 		
 	}
 	
+	public Date(String d) {
+		this.date = d;
+	}
+	
 	public Date(String d, String m, String y) {
 		this.date = d+"/"+m+"/"+y;
 	}

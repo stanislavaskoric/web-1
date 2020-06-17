@@ -4,6 +4,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -34,11 +36,13 @@ public class UserDAO {
 		this.admins = new HashMap<String, Admin>();
 		this.hosts = new HashMap<String, Host>();
 		this.guests = new HashMap<String, Guest>();
+		System.out.println("HEREEEEEE"+path);
 		this.setPath(path);
 		System.out.println(path);
 		loadUsers(path+"/admins.json");
 		loadUsers(path+"/hosts.json");
 		loadUsers(path+"/guests.json");
+		
 	}
 	
 	public HashMap<String, Admin> getAdmins() {
@@ -75,7 +79,7 @@ public class UserDAO {
 	
 	
 	public User addUser(User user) {
-		System.out.println("add user");
+		System.out.println("---add user---");
 		String username = user.getUsername();
 		if((admins.get(username)==null) && (hosts.get(username)==null) && (guests.get(username)==null)) {
 			if(user.getRole().equals("HOST")) {
@@ -84,7 +88,8 @@ public class UserDAO {
 				addGuest(user);
 			}			
 		}else {
-			user = null;  //ovakav korisnik vec postoji u sistemu
+			System.out.println("username vec postoji u sistemu");
+			user = null;  
 		}
 		return user;
 	}
@@ -257,19 +262,78 @@ public class UserDAO {
         		if( guest == null) {
         			user = null;
         		}else {
-        			user = (User)guest;
+        			user = new User(guest.getUsername(),guest.getPassword(),guest.getFirstName(),guest.getLastName(),guest.getGender());
+        		    user.setRole("GUEST");
         		}
         	}else {
-        		user = (User)host;
+        		user = new User(host.getUsername(),host.getPassword(),host.getFirstName(),host.getLastName(),host.getGender());
+        	    host.setRole("HOST");
         	}
         }else {
         	user = (User)admin;
         }
         if(user!=null)
-        	System.out.println(user.getUsername() + user.getRole());
+        	System.out.println(user.getUsername() + user.getRole() + user.getPassword());
         return user;
 	}
 	
+	public Guest findGuest(String username) {
+		System.out.println("---find guest---");
+		Guest g = guests.get(username);
+		if(g==null) {
+			return null;
+		}
+		return g;
+	}
+	
+	public Collection<User> searchUser(String username, String gender, String role){
+		System.out.println("---search user---");
+		System.out.println(username + gender + role);
+		ArrayList<User> returnList = new ArrayList<User>();
+		for(Admin a: admins.values()) {	
+			if(a.getUsername().toLowerCase().contains(username.toLowerCase())) {
+				if(a.getGender().toLowerCase().contains(gender.toLowerCase())) {
+					if(a.getRole().toLowerCase().contains(role.toLowerCase())) {
+						returnList.add((User)a);
+					}
+				}
+			}	
+		}
+		for(Host h: hosts.values()) {
+			if(h.getUsername().toLowerCase().contains(username.toLowerCase())) {
+				if(h.getGender().toLowerCase().contains(gender.toLowerCase())) {
+					if(h.getRole().toLowerCase().contains(role.toLowerCase())) {
+						returnList.add((User)h);
+					}
+				}
+			}	
+		}
+		for(Guest g: guests.values()) {
+			if(g.getUsername().toLowerCase().contains(username.toLowerCase())) {
+				if(g.getGender().toLowerCase().contains(gender.toLowerCase())) {
+					if(g.getRole().toLowerCase().contains(role.toLowerCase())) {
+						User user = new User();
+						user = (User)g;
+						returnList.add(user);
+					}
+				}
+			}	
+		}
+		
+		return returnList;
+	}
+	
+	
+	public void updateUser(User u) {
+		 System.out.println(u.getUsername());
+		 if(u.getRole()=="ADMIN") {
+			admins.put(u.getUsername(),new Admin(u)); 
+		 }else if(u.getRole()=="HOST") {
+			 hosts.put(u.getUsername(), new Host(u));
+		 }else {
+			 guests.put(u.getUsername(), new Guest(u));
+		 }
+	}
 	
 	
 	

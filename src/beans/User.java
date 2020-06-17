@@ -8,7 +8,18 @@ public class User {
 	private String lastName;
 	private String gender;
 	private String role;      //admin, host, guest
-	  
+	
+	public User() {
+		
+	}
+	
+	public User(String u,String p, String f, String l, String g) {
+		this.username = u;
+		this.password = p;
+		this.firstName = f;
+		this.lastName = l;
+		this.gender = g;
+	}
 	  
 	public String getUsername() {
 		return username;

@@ -1,0 +1,242 @@
+
+/* NAVBAR */
+ul.homenavbar{
+    list-style-type: none;
+    margin: 0;
+    overflow: hidden;
+    background-color: #24b3ff;
+    position: -webkit-sticky; /* Safari */
+    position: sticky;
+    top: -2%;
+    left: -2%
+}
+li.nav {
+    float: left;
+    font-size: 2.5ex;
+}
+li.nav a {
+    display: block;
+    cursor: pointer;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+li.nav a:hover {
+    color:lightgray;
+}
+.active {
+    color: white;
+    background-color: lightgray;
+}
+#li_logout, #li_login, #li_signup{
+    border-right: 1px solid #bbb;
+    float: right;
+}
+
+/* SIDEBAR */
+ul.homesidebar{
+  width: 250px;
+  position: fixed;
+  z-index: 1;
+  top: 60px;
+  left: 10px;
+  background: #eee;
+  overflow-x: hidden;
+  padding: 8px 0;
+}
+
+li.str a {
+  padding: 6px 8px 6px 16px;
+  text-decoration: none;
+  font-size: 18px;
+  color: #2196F3;
+  display: block;
+}
+
+li.str a.active {
+  color: #064579;
+}
+li.str a:hover:not(.active) {
+     color: #064579;
+    cursor: pointer;
+}
+
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 12px;}
+}
+
+
+/* PRETRAGA KORISNIKA */
+#searchUsername{
+  width: 150px;
+  margin-left : 27%;
+  margin-right: 5%;
+  margin-top: 1%;
+  box-sizing: border-box;
+  border: 2px solid #2196F3;
+  border-radius: 4px;
+  font-size: 16px;
+  background-color: white;
+  /*background-image: url('slike/searchicon.png');*/ 
+  background-repeat: no-repeat;
+  padding: 12px 10px 12px 20px;
+  -webkit-transition: width 0.4s ease-in-out;
+  transition: width 0.4s ease-in-out;
+}
+ #searchGender, #searchRole {
+    width: 150px;
+    margin-left: -5%;
+    margin-right: 5%;
+    margin-top: 1%;
+    box-sizing: border-box;
+    border: 2px solid #2196F3;
+    border-radius: 4px;
+    font-size: 16px;
+    background-color: white;
+    /*background-image: url('slike/searchicon.png');*/ 
+    background-repeat: no-repeat;
+    padding: 12px 10px 12px 20px;
+    -webkit-transition: width 0.4s ease-in-out;
+    transition: width 0.4s ease-in-out;
+}
+
+/*TABELEEEEEE*/
+
+#tabela_korisnika
+{
+    border-collapse: collapse;
+    width: 50%;
+    margin-left: 25%;
+    margin-top: 1%;
+}
+
+#tabela_korisnika th
+{
+    padding: 20px;
+    margin-left: 28%;
+    text-align: center;
+    border-bottom: 1px solid #064579;
+    font-size:16px;
+    font-family: serif;
+}
+
+#tabela_korisnika td
+{
+    padding: 20px;
+    text-align: center;
+    margin-left: -20px;
+    border-bottom: 1px solid #ddd;
+    font-size: 16px;
+    font-family: serif;
+}
+
+#adminTable{
+  border-collapse: collapse;
+  width: 30%;
+  margin-left: 25%;
+  margin-top: 1%;
+}
+
+#adminTable th{
+  padding: 15px;
+  text-align: center;
+  border-bottom: 1px solid #2196F3;
+  font-size:17px;
+  font-family: serif;
+}
+
+#adminTable td{
+    padding: 15px;
+    border-bottom:1px solid #2196F3;
+    text-align: center;
+    font-size: 17px;
+    font-family: serif;
+}
+
+#searchButton{
+  background-color: #2196F3;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  padding: 16px 30px;
+  text-align: center;
+  font-size: 16px;
+  margin-left: -20px;
+  opacity: 0.6;
+  transition: 0.3s;
+  display: inline-block;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+
+/*******************************************MODALNIIII****************************************************/
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+
+/* Modal Content */
+.modal-content {
+  position: relative;
+  background-color: #fefefe;
+  margin-left: 35%;
+  padding: 0;
+  border: 1px solid #888;
+  width: 45%;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+  -webkit-animation-name: animatetop;
+  -webkit-animation-duration: 0.4s;
+  animation-name: animatetop;
+  animation-duration: 0.4s
+}
+
+/* Add Animation */
+@-webkit-keyframes animatetop {
+  from {top:-300px; opacity:0} 
+  to {top:0; opacity:1}
+}
+
+@keyframes animatetop {
+  from {top:-300px; opacity:0}
+  to {top:0; opacity:1}
+}
+
+/* The Close Button */
+.close {
+  color: white;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.modal-header {
+  padding: 2px 16px;
+  background-color: #2196F3;
+  color: black;
+}
+
+.modal-body {padding: 2px 16px;}
+/*******************************************MODALNI***************************/
+
+

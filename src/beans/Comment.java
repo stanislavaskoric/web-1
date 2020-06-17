@@ -2,6 +2,7 @@ package beans;
 
 public class Comment {
 	
+	private long id;
 	private Guest guest;
 	private Apartment apartment;
 	private String text;
@@ -10,6 +11,15 @@ public class Comment {
 	
 	public Comment() {
 		super();
+	}
+
+	
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
 	}
 
 	public Guest getGuest() {

@@ -1,1 +1,21 @@
-[]
+[
+  {
+     "username" : "host1",
+     "password" : "host",
+     "firstName" : "pera",
+     "lastName" : "peric",
+     "gender" : "male",
+     "role" : "HOST",
+     "rentApartments" : []
+  },
+  {
+    "username" : "host2",
+    "password" : "host",
+    "firstName" : "milena",
+    "lastName" : "mikic",
+    "gender" : "female",
+    "role" : "HOST",
+    "rentApartments" : []
+  }
+
+]
