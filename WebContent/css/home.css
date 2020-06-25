@@ -103,6 +103,38 @@ li.str a:hover:not(.active) {
 }
 
 /*TABELEEEEEE*/
+#addCards{
+    font-family: serif; 
+    margin-left: 30%;
+    margin-right: 5%;
+    
+}
+#addCards tbody h2{
+    color: darkgreen;
+    vertical-align: top;
+}
+#addCards tbody h2{
+    color: darkgreen;
+    vertical-align: top;
+    text-align: center;
+}
+#addCards tbody p{
+    max-width: 200;
+}
+#addCards tbody h3{
+    color: darkgreen;
+    vertical-align: bottom;
+    text-align: right;
+}
+
+
+#tabela_pocetna {
+    border-color: #ccc;
+    padding: 2px;
+    border-radius: 15px;
+}
+
+
 
 #tabela_korisnika
 {
@@ -132,14 +164,14 @@ li.str a:hover:not(.active) {
     font-family: serif;
 }
 
-#adminTable{
+#adminTable,#amentiesTable{
   border-collapse: collapse;
   width: 30%;
   margin-left: 25%;
   margin-top: 1%;
 }
 
-#adminTable th{
+#adminTable th, #amentiesTable th{
   padding: 15px;
   text-align: center;
   border-bottom: 1px solid #2196F3;
@@ -147,7 +179,7 @@ li.str a:hover:not(.active) {
   font-family: serif;
 }
 
-#adminTable td{
+#adminTable td, #amentiesTable td{
     padding: 15px;
     border-bottom:1px solid #2196F3;
     text-align: center;
@@ -230,6 +262,21 @@ li.str a:hover:not(.active) {
   cursor: pointer;
 }
 
+.closeSearch {
+  color: white;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.closeSearch:hover,
+.closeSearch:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+
 .modal-header {
   padding: 2px 16px;
   background-color: #2196F3;
@@ -237,6 +284,34 @@ li.str a:hover:not(.active) {
 }
 
 .modal-body {padding: 2px 16px;}
-/*******************************************MODALNI***************************/
+/*******************************************MAPAA***************************/
+.ol-control button { 
+    background-color: rgba(40, 40, 40, 0.8) !important;
+}
+.ol-control button:hover { 
+    background-color: rgba(40, 40, 40, 1) !important;
+}
+
+
+/******************************************CARDS**************************************************/
+.card:hover{
+    cursor: pointer;
+    text-decoration-line: underline;
+    color: blue;
+    webkit-filter: blur(1px); /* Chrome, Safari, Opera */
+    filter: blur(1px);
+}
+
+
+/***********************************SEARCH********************************************************/
+table#tab_pretraga .opseg{
+    width: 150px;    
+}
+
+.err{
+    font-size: 11px;
+    color: red;
+}
+
 
 

@@ -7,19 +7,43 @@
      <script src="jquery-3.3.1.min.js"></script>
      <script src="js/home.js"></script>
      <script src="js/admin.js"></script>
+     <script src="js/host.js"></script>
+     <script src="js/search.js"></script>
      
      
      <link rel="stylesheet" type="text/css" href="css/home.css">
-     <!-- Latest compiled and minified CSS -->
+     <!-- Latest compiled and minified CSS for bootstrap -->
      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 
       <!-- Latest compiled JavaScript for bootstrap-->
       <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+      
+      <!-- Mape -->
+       <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.3.1/css/ol.css" type="text/css">
+       <style>
+        .map {
+           height: 480px;
+           width: 82%;
+           margin-left:19%;
+        }
+        </style>
+        <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.3.1/build/ol.js"></script>
+       <!-- GEOCODER -->
+       <link href="https://unpkg.com/ol-geocoder/dist/ol-geocoder.min.css" rel="stylesheet">
+       <script src="https://unpkg.com/ol-geocoder"></script>
+       <!-- ol-ext -->
+       <link rel="stylesheet" href="https://cdn.rawgit.com/Viglino/ol-ext/master/dist/ol-ext.min.css" />
+       <script type="text/javascript" src="https://cdn.rawgit.com/Viglino/ol-ext/master/dist/ol-ext.min.js"></script>
+       
+       <!-- Multiplse select datapicker -->
+       <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker3.min.css" rel="stylesheet">
+       <script type="text/javascript"  src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
+       
  
 </head>
 <body>
     
-     <!-- NAVBAR -->
+     <!-- -----------------------------------------------NAVBAR -------------------------------------------------------------->
       <ul id="homenavbar" class="homenavbar">
         <li class="nav" id="pocetna"><a>HOME</a></li>
         <li class="nav"  id="li_logout" hidden="true"><a href="login.html">LOG OUT</a></li>
@@ -28,16 +52,26 @@
      </ul>
 
 
-    <!-- SIDEBAR -->
+    <!------------------------------------------------ SIDEBAR --------------------------------------------------------------->
       <ul id="homesidebar" class="homesidebar">
-        <div id="admin">
-	        <li class="str" id="li_adminProfil"><a>Moj profil</a></li>
-	        <li class="str" id="li_search"><a>Pretrazi korisnike</a></li>
+        <div id="forAllUsers" hidden="true">
+            <li class="str" id="li_adminProfil"><a>Moj profil</a></li>
+        </div>
+        <div id="adminSidebar" hidden="true">
+	        <li class="str" id="li_adminSearch"><a>Pretrazi korisnike</a></li>
+	        <li class="str" id="li_holidayDays"><a>Novi praznicni datum</a>
+	        <li class="str" id="li_adminAmenties"><a>Lista sadrzaja apartmana</a></li>
+        </div>
+        <div id="hostSidebar" hidden="true">
+            <li class="str" id="li_adminAddApartment"><a>Dodaj novi apartman</a></li>
+        </div>
+        <div id="unknownUser" hidden="true">
+            <li class="str" id="li_searchApartment"><a>Pretrazi apartmane</a></li>
         </div>
       </ul> 
       
  
-    <!-- PRETRAGA KORISNIKA -->
+    <!-- -----------------------------------------PRETRAGA KORISNIKA ---------------------------------------------------------->
     <div id="dsearchUsers" hidden="true" >
     <form>
         <div id="pretraga_korisnika">
@@ -62,7 +96,7 @@
     </div>
     
     
-    <!-- IZMENA PROFILA -->
+    <!------------------------------------------------ IZMENA PROFILA -------------------------------------------------------->
      <div id="adminProfil" hidden= "true">
          <form>
             <table id="adminTable">
@@ -86,7 +120,7 @@
          </form>
      </div>
      
-     <!-- MODALNI IZMENA IMENA, PREZIMENA -->
+     <!----------------------------------------- MODALNI IZMENA IMENA, PREZIMENA --------------------------------------------->
        <div id="myAdminModal" class="modal" tabindex="-1" role="dialog" hidden="true">
        <div class="modal-dialog" role="document">
          <div class="modal-content">
@@ -140,8 +174,333 @@
      </div>
     
     
+    <!-------------------- ODRAZAVANJE LISTE SADRZAJA APARTMANA OD STRANE ADMINA -TABELA PRIKAZA ---------------------------------->
+      
+      <div id=adminAmentiesTable hidden="true">
+              <button class="btn btn-primary"  style="margin-left: 25%; margin-top:1%" id="button_addAmenties">Dodaj</button>
+              <button class="btn btn-primary"  style="margin-left: 2%; margin-top:1%" id="button_changeAmenties">Izmeni</button>
+              <button class="btn btn-primary"  style="margin-left: 2%; margin-top:1%" id="button_deleteAmenties">Izbrisi</button>
+              <table id="amentiesTable">
+                <thead>
+                </thead>
+          	    <tbody>
+                </tbody>
+              </table>       
+      </div>
+    
+     <!-- ------ODRAZAVANJE LISTE SADRZAJA APARTMANA OD STRANE ADMINA -MODALNI ZA IZMENU,BRISANJE I DODAVANJE ----------------->
+     <div id="myAmentiesModal" class="modal" tabindex="-1" role="dialog" hidden="true">
+       <div class="modal-dialog" role="document">
+         <div class="modal-content">
+           <div class="modal-header">
+              <button type="button" class="closeAmenties" data-dismiss="modal" aria-label="Close" style="float: right; font-weight: bold;color: #000;">
+                   <span aria-hidden="true">&times;</span>
+              </button>
+           </div>
+           <div class="modal-body">
+              <table>
+		          <form>
+		              <tr>
+		                  <th>Unesi naziv stavke:</th>
+		              </tr>
+		              <tr>
+		                  <td><input type="text" id="inputAddAmenites" autofocus ></td>
+		              </tr>
+		              <tr>
+		                 <td><p id="addAmentiesError"  style="color: red"></p></td>
+		              </tr>
+		        </form>
+		       </table>
+            </div>  
+            <div class="modal-footer">
+               <button type="button" class="btn btn-primary" id="button_saveNewAmenties">Sacuvaj</button>
+           </div> 
+           </div>
+          </div>
+       </div>
+        <div id="myChangeAmentiesModal" class="modal" tabindex="-1" role="dialog" hidden="true">
+       <div class="modal-dialog" role="document">
+         <div class="modal-content">
+           <div class="modal-header">
+              <button type="button" class="closeChangeAmenties" data-dismiss="modal" aria-label="Close" style="float: right; font-weight: bold;color: #000;">
+                   <span aria-hidden="true">&times;</span>
+              </button>
+           </div>
+           <div class="modal-body">
+              <table>
+		          <form>
+		              <tr>
+		                  <th>Unesi naziv stavke za imenu:</th>
+		              </tr>
+		              <tr>
+		                  <td><input type="text" id="inputChangeAmenites" autofocus ></td>
+		              </tr>
+		               <tr>
+		                  <th>Unesi novi naziv:</th>
+		              </tr>
+		              <tr>
+		                  <td><input type="text" id="inputChangeNewAmenites" autofocus ></td>
+		              </tr>
+		              <tr>
+		                 <td><p id="changeAmentiesError"  style="color: red"></p></td>
+		              </tr>
+		        </form>
+		       </table>
+            </div>  
+            <div class="modal-footer">
+               <button type="button" class="btn btn-primary" id="button_changeNewAmenties">Sacuvaj izmenu</button>
+           </div> 
+           </div>
+          </div>
+       </div>
+       <div id="myDeleteAmentiesModal" class="modal" tabindex="-1" role="dialog" hidden="true">
+        <div class="modal-dialog" role="document">
+         <div class="modal-content">
+           <div class="modal-header">
+              <button type="button" class="closeDeleteAmenties" data-dismiss="modal" aria-label="Close" style="float: right; font-weight: bold;color: #000;">
+                   <span aria-hidden="true">&times;</span>
+              </button>
+           </div>
+           <div class="modal-body">
+              <table>
+		          <form>
+		              <tr>
+		                  <th>Unesi naziv stavke za brisanje:</th>
+		              </tr>
+		              <tr>
+		                  <td><input type="text" id="inputDeleteAmenites" autofocus ></td>
+		              </tr>
+		              <tr>
+		                 <td><p id="deleteAmentiesError"  style="color: red"></p></td>
+		              </tr>
+		        </form>
+		       </table>
+            </div>  
+            <div class="modal-footer">
+               <button type="button" class="btn btn-primary" id="button_deleteNewAmenties">Obrisi</button>
+           </div> 
+           </div>
+          </div>
+       </div>
     
     
+    
+    
+    
+     <!-- ----------------------MAPA ZA LOKACIJU-------------------------------------------------------------------- -->
+      <div id="map" class="map" tabindex="0" hidden="true"></div>
+      
+      <div id="infoAddApartment" hidden="true" style="margin-left:19%;">
+         <button type="button" class="btn btn-primary" id="button_inputNewApartment">Unesi informacije o apartmanu</button>
+      </div>
+      
+      
+      
+      
+      
+      
+      <!-- --------------------------------MODALNI ZA INFO O APARTMANU KOJI SE DODAJE----------------------------------- -->
+       <div id="myAddApartmentModal" class="modal" tabindex="-1" role="dialog" hidden="true">
+        <div class="modal-dialog" role="document">
+         <div class="modal-content" style="width: 80%; height:80%;margin-left:25%">
+           <div class="modal-header">
+              <button type="button" class="closeAddApartmentModal" data-dismiss="modal" aria-label="Close" style="float: right; font-weight: bold;color: #000;">
+                   <span aria-hidden="true">&times;</span>
+              </button>
+           </div>
+           <div class="modal-body">
+              <table>
+		          <form>
+		              <tr>
+		                  <td>Tip apartmana:</td>
+		                  <td>
+		                     <select name="tip_apartmana" id="tip_apartmana">
+		                         <option value="apartman">apartman</option>
+		                         <option value="soba">soba</option>
+		                     </select>
+		                  </td>
+		              </tr>
+		              <tr>
+		                  <td>Broj soba:</td>
+		                  <td><input type="number" id="numberRooms"></td>
+		              </tr>
+		               <tr>
+		                  <td>Maksimalan broj gostiju:</td>
+		                  <td><input type="number" id="numberGuests"></td>
+		               </tr>
+		                <tr>
+		                  <td>Cena po noci:</td>
+		                  <td><input type="number" id="costsPerNight"></td>
+		               </tr>
+		              <tr>
+		                  <td>Dostupni datumi za izdavanje:</td>
+		                  <td>
+		                     <div class="input-group date form-group" id="datepicker">
+   							 <input type="text" class="form-control" id="Dates" name="Dates" placeholder="Select days" required />
+   							 <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i><span class="count"></span></span>
+							 </div>	                  
+		                  </td>
+		              </tr>
+		              <tr>
+		                  <td>Vreme za prijavu:</td>
+		                  <td><input type="time" id="timeIn" name="appt"></td>
+		              </tr>
+		              <tr>
+		                  <td>Vreme za odjavu:</td>
+		                  <td><input type="time" id="timeOut" name="appt"></td>
+		              </tr>
+		              <tr>
+		                  <td>Slike:</td>
+		                  <td> <input type="file" id="files" name="files[]" multiple="multiple" class="multiupload"></td>
+		              </tr>
+		              <tr>
+		                  <td>Sadrzaj apartmana:</td>
+		                  <td><input type="button" value="Dodaj sadrzaj" id="amentiesIntoAp"></td>
+		              </tr>
+		              <tr>
+		                 <td><p id="addApartmentError"  style="color: red"></p></td>
+		              </tr>
+		        </form>
+		       </table>
+            </div>  
+            <div class="modal-footer">
+               <button type="button" class="btn btn-primary" id="button_addNewAperment">Sacuvaj</button>
+           </div> 
+           </div>
+          </div>
+       </div>
+    
+    
+    
+      <!-- -------------------MODALNI ZA DODAVANJE SADRZAJA U APARTMAN------------------------------------------------------------- -->
+      <div id="myAddIntoAppModal" class="modal" tabindex="-1" role="dialog" hidden="true">
+        <div class="modal-dialog" role="document">
+         <div class="modal-content" style="width: 70%; height:70%;margin-left:32%">
+           <div class="modal-header">
+              <button type="button" class="closeAddIntoApp" data-dismiss="modal" aria-label="Close" style="float: right; font-weight: bold;color: #000;">
+                   <span aria-hidden="true">&times;</span>
+              </button>
+           </div>
+           <div class="modal-body">
+              <table id="amentiesTableCheck">
+                <thead>
+                </thead>
+          	    <tbody>
+                </tbody>
+              </table>
+            </div>  
+            <div class="modal-footer">
+               <button type="button" class="btn btn-primary" id="button_pickUpAmenties">Potvrdi izbor</button>
+           </div> 
+           </div>
+          </div>
+       </div>
+    
+    
+     <!-- -----------------------------PREGLED APARTMANAA(POCETNA STRANA)-------------------------------------------------------------- -->
+     <div id="addCards" style="margin-left:22%">
+         <table id="tabela_pocetna">
+            <tbody>
+            </tbody>
+        </table>
+     </div>
+     </div>
+     
+     
+     
+     <!-- ----------------------------MODALNI ZA PRETRAGU APARTMANA--------------------------------------------------------------- -->
+     
+     <div id="mod_pretraga" class="modal" hidden="true">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="closeSearch" style="">&times;</span>
+            </div>
+            <div class="modal-body" style="margin-left:10%">
+                <form>
+                    <table id="tab_pretraga">
+                         <tr>
+                            <th>Datum boravka:</th>
+                            <td>
+                                Od: <input style="width:120" type="date" id="datumOd">
+                                Do: <input style="width:120"  type="date" id="datumDo">
+                                <p class="err" align="right" id="errDatum"></p>
+                            </td>
+                         </tr>
+                         <tr>
+                            <th>Cena:</th>
+                            <td>
+                                Od: <input class="opseg" type="number" id="cenaOd" step="0.01">
+                                Do: <input class="opseg" type="number" id="cenaDo" step="0.01">
+                                <p class="err" align="right" id="errCena"></p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Broj soba:</th>
+                            <td>
+                                Od: <input class="opseg" type="number" id="brojsobaOd">
+                                Do: <input class="opseg" type="number" id="brojsobaDo">
+                                <p class="err" align="right" id="errBrojSoba"></p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Broj osoba:</th>
+                            <td>
+                                Od: <input class="opseg" type="number" id="brojOsoba">
+                                <p class="err" align="right" id="errOsoba"></p>
+                            </td>
+                        </tr> 
+                    </table>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button id="pretraziButton" class="btn btn-primary">Pretrazi</button>
+            </div>
+          </div>
+        </div>
+    </div>
+     
+     
+     <!-- -------------------------------------MODALNI ZA UNOS PRAZNIKAA ----------------------------------------------- ----->
+     <div id="modHoliday" class="modal" hidden="true">
+        <!-- Modal content -->
+        <div class="modal-content" style="width: 400px; height:210px;">
+            <div class="modal-header">
+                <span class="closeHoliday" >&times;</span>
+            </div>
+            <div class="modal-body" style="margin-left:10%;">
+                <form>
+                    <table id="tab_holiday">
+                         <tr>
+                            <th>Datum praznika:</th>
+                            <td>
+                                <input style="width:120" type="date" id="holidayDate">
+                                <p class="err" align="right" id="errHolidayDate"></p>
+                            </td>
+                         </tr>
+                         <tr>
+                            <th>Naziv praznika:</th>
+                            <td>
+                                <input class="opseg" type="text" id="holidayName">
+                                <p class="err" align="right" id="errHolidayName"></p>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button id="holidayButton" class="btn btn-primary">Sacuvaj praznik</button>
+            </div>
+          </div>
+        </div>
+    </div>
+     
+     
+     
+     
+     
+     
+     
     
     
     

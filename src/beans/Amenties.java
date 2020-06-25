@@ -1,20 +1,30 @@
 package beans;
 
+
 public class Amenties {
 	
 	private long id;
 	private String name;
-	private String description;
+	private boolean active;  //fleg za logicko brisanje  TRUE-ACTIVAN, FALSE-OBRISAN
+	
 	
 	public Amenties() {
 		super();
+		this.active = true;
 	}
-
-	public Amenties(long id, String name, String description) {
+	
+	public Amenties(long id, String name) {
 		super();
 		this.id = id;
 		this.name = name;
-		this.description = description;
+		this.active = true;
+	}
+	
+	public Amenties(long id, String name, boolean active) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.active = active;
 	}
 
 	public long getId() {
@@ -33,16 +43,16 @@ public class Amenties {
 		this.name = name;
 	}
 
-	public String getDescription() {
-		return description;
+	public boolean isActive() {
+		return active;
 	}
 
-	public void setDescription(String description) {
-		this.description = description;
+	public void setActive(boolean active) {
+		this.active = active;
 	}
+   
 	
-	
-	
+
 	
 
 }

@@ -267,7 +267,7 @@ public class UserDAO {
         		}
         	}else {
         		user = new User(host.getUsername(),host.getPassword(),host.getFirstName(),host.getLastName(),host.getGender());
-        	    host.setRole("HOST");
+        	    user.setRole("HOST");
         	}
         }else {
         	user = (User)admin;

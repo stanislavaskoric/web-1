@@ -1,5 +1,8 @@
 package services;
 
+import java.time.LocalDate;
+import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +19,7 @@ import beans.Apartment;
 import beans.Guest;
 import beans.Reservation;
 import dao.ApartmentDAO;
+import dao.CodeBookDAO;
 import dao.ReservationDAO;
 import dao.UserDAO;
 
@@ -42,8 +46,12 @@ public class ReservationService {
 			servletContext.setAttribute("users",new UserDAO(p));
 		}
 		if(servletContext.getAttribute("apartments") == null) {
-			String p = servletContext.getRealPath("")+"/data";                
+			String p = servletContext.getRealPath("");                
 			servletContext.setAttribute("apartments", new ApartmentDAO(p));
+		}
+		if(servletContext.getAttribute("codebooks") == null) {
+			String p = servletContext.getRealPath("")+"/data";                
+			servletContext.setAttribute("codebooks", new CodeBookDAO(p));
 		}
 		if(servletContext.getAttribute("reservations") == null) {
 			String p = servletContext.getRealPath("")+"/data";  
@@ -54,20 +62,21 @@ public class ReservationService {
 	}
 	
 	@POST
-	@Path("/add")
+	@Path("/")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response add(Reservation reservation, @QueryParam("username") String username, @QueryParam("id") Long id) {
+	public Response add(Reservation reservation) {
 		System.out.println("*****ADD RESERVATION*****");
+		System.out.println(reservation);
 		
-		ReservationDAO reservations = (ReservationDAO) servletContext.getAttribute("reservations");
-		UserDAO users = (UserDAO) servletContext.getAttribute("users");
 		ApartmentDAO apartments = (ApartmentDAO) servletContext.getAttribute("apartments");
+		CodeBookDAO codebooks = (CodeBookDAO) servletContext.getAttribute("codebooks");
+		ReservationDAO reservations = (ReservationDAO) servletContext.getAttribute("reservations");
 		
-		System.out.println("parametri"+username +id);
-		Guest g = users.findGuest(username);
-		Apartment a = apartments.findApartmentById(id);
-		reservations.addReservation(reservation,g,a);
+		
+		double price = apartments.getPricePerNight(reservation.getApartment());
+		List<LocalDate> holidays = codebooks.getHolidayDayes();
+		reservations.addReservation(reservation,price,holidays);
 		
 		return Response.status(200).build();
 		

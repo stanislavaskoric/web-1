@@ -1,0 +1,6 @@
+1;Wifi;true
+2;Klima uredjaj;true
+3;Topla voda;true
+4;Pegla;true;
+5;Tus kabina;true;
+6;Kada;true
