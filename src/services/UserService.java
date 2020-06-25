@@ -73,6 +73,7 @@ public class UserService {
 			if(!u.getPassword().equals(user.getPassword())) {
 				return Response.status(400).entity("Korisnicko ime ili lozinka nisu ispravni").build();
 			}else {
+				//System.out.println(u.getRole()+"JEKOOOO");
 				HttpSession session = request.getSession();
 				session.setAttribute("user", u);
 				return  Response.status(200).build();
@@ -105,6 +106,7 @@ public class UserService {
 	@Path("/getActive")
 	@Produces(MediaType.APPLICATION_JSON)
 	public User getActiveUser() {            //iz sesije ucitavam ulogovanog korisnika
+		System.out.println("****GET ACTIVE****");
 		User u;
 		try {
 			u = (User) request.getSession(false).getAttribute("user");

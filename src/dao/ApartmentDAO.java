@@ -4,7 +4,14 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -17,9 +24,10 @@ import org.json.simple.parser.ParseException;
 import beans.Amenties;
 import beans.Apartment;
 import beans.Comment;
-import beans.Date;
 import beans.Location;
 import beans.Reservation;
+import dto.AdDTO;
+import dto.ApartmentDTO;
 
 
 @SuppressWarnings("unchecked")
@@ -51,13 +59,247 @@ public class ApartmentDAO {
 		this.path = path;
 	}
 	
-	public void addApartment(Apartment apartment) {
+	
+	
+	public Apartment findApartmentById(Long id) {
+		return apartments.get(id);
+	}
+	
+	
+	public double getPricePerNight(Long id) {
+		Apartment a = apartments.get(id);
+		return a.getPrice();
+	}
+	
+	
+	
+	public List<AdDTO> findActiveAparment(){  //ubaciti da se samo aktivni vracaju
+		List<AdDTO> ret = new ArrayList<AdDTO>();
+		for(Apartment a: apartments.values()) {
+		       AdDTO ad = new AdDTO();
+		       ad.setId(a.getId());
+		       ad.setAddress(a.getLocation().getAddress());
+		       ad.setImg("./images/"+a.getImages().get(0));
+		       ad.setDescription("maksimalan kapacitet: "+a.getGuestsNumber()+"<br />"+
+		                         "cena od: "+a.getPrice()+" RSD");
+		       ret.add(ad);
+		}
+		return ret;
+	}
+	
+	
+	public Collection<Apartment> getSort(String type){
+		List<Apartment> ret = new ArrayList<Apartment>(apartments.values());
+	    Comparator<Apartment> compareByCost = (Apartment o1, Apartment o2) -> Double.compare(o1.getPrice(), o2.getPrice());
+	    if(type.equals("asceding")) {
+	    	Collections.sort(ret, compareByCost);
+	    }else {
+	    	Collections.sort(ret, compareByCost.reversed());
+	    }
+	    return ret;
+	}
+	
+	
+	
+	
+	public Collection<AdDTO> getSearchApartment(String dO, String dD, String cO, String cD, String sO, String sD, String o){
+		ArrayList<AdDTO>ret = new ArrayList<AdDTO>();
+		List<String> datesOpseg = getDaysBetweenDates(dO,dD);
+		for(Apartment a: apartments.values()) {
+			if(opsegDate(datesOpseg,a.getRentDates())) {  //promeni ovde available dates
+				System.out.println("cene");
+				if(opsegCena(a.getPrice(),cO,cD)) {
+					System.out.println("sobe");
+					if(opsegSoba(a.getRoomsNumber(),sO,sD)) {
+						System.out.println("osobe");
+						if(o.length()>0) {
+							int brojOsoba = Integer.parseInt(o);	
+							if(brojOsoba == a.getGuestsNumber()) {  
+								 AdDTO temp = new AdDTO(a);
+								 ret.add(temp);
+							}
+						}else {
+							 AdDTO temp = new AdDTO(a);
+							 ret.add(temp);
+						}
+					}else { //broj soba nije u opsegu
+					
+					}
+				}else {  //cena nije u opsegu
+					
+				}
+			}else {  //datum nije u opsegu
+				
+			}
+		}	
+		return ret;
+	}
+	
+	
+	
+	
+	
+	public boolean opsegDate(List<String> myOpsegDate, List<String>availableDates) {
+		if(myOpsegDate == null) {
+			return true;
+		}
+		// da li se sve iz opsega nalazi u listi slobodnih dana
+		for(String s : myOpsegDate) {
+			if(!availableDates.contains(s)) {
+				return false;
+			}
+		}		
+		return true;
+	}
+	
+	
+	
+	
+	public List<String> getDaysBetweenDates(String min, String max) //racunam prvi, poslednji ne
+	{
+	    List<String> dates = new ArrayList<String>();
+	    if(min.length() == 0) {
+	    	return dates;
+	    }
+	    Date minn = null;
+		Date maxx = null;
+		try {
+		    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		    minn = sdf.parse(formated(min));
+		    maxx = sdf.parse(formated(max));
+		} catch (java.text.ParseException e) {
+		    e.printStackTrace();
+		}
+	    
+	    Calendar calendar = new GregorianCalendar();
+	    calendar.setTime(minn);
+	    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+	    while (calendar.getTime().before(maxx))
+	    {
+	        Date result = calendar.getTime();
+	        String todayAsString = sdf.format(result);
+	        dates.add(todayAsString);
+	        calendar.add(Calendar.DATE, 1);
+	    }
+	    return dates;
+	}
+	
+	
+	
+	public String formated(String s) {
+		System.out.println(s);
+		String []a = s.split("-");
+		return a[2]+"/"+a[1]+"/"+a[0];
+	}
+	
+	
+	
+	public boolean opsegCena(double prava, String min, String max) {
+		if(min.length() == 0) {
+			return true;
+		}
+		boolean flag = false;
+		double minn, maxx;
+		if(!min.equals("")) {
+			minn = Double.parseDouble(min);
+		}
+		else {
+			minn = 0;
+		}
+		if(!max.equals("")) {
+			maxx = Double.parseDouble(max);
+		}
+		else {
+			maxx = Double.MAX_VALUE;
+		}
+		
+		if(prava >= minn && prava <= maxx) {
+			flag = true;
+		}
+		
+		return flag;
+	}
+	
+	
+	
+	public boolean opsegSoba(int prava, String min, String max) {
+		if(min.length() == 0) {
+			return true;
+		}
+		boolean flag = false;
+		int minn, maxx;
+		if(!min.equals("")) {
+			minn = Integer.parseInt(min);
+		}
+		else {
+			minn = 0;
+		}
+		if(!max.equals("")) {
+			maxx = Integer.parseInt(max);
+		}
+		else {
+			maxx = Integer.MAX_VALUE;
+		}
+		
+		if(prava >= minn && prava <= maxx) {
+			flag = true;
+		}
+		
+		return flag;
+	}
+	
+	
+	
+	public void addApartment(ApartmentDTO apartment) {
 		System.out.println("--dodavanje apartmana--");
-	    apartment.setId(apartments.size()+1);
-	    apartment.setStatus("INACTIVE");
-	    apartments.put(apartment.getId(),apartment);
+		
+		String type = apartment.getTip_apartmana();
+		int roomsNumber = Integer.parseInt(apartment.getBroj_soba());
+		int guestsNumber = Integer.parseInt(apartment.getBroj_gostiju());
+		
+		//System.out.println(type+" "+roomsNumber+" "+guestsNumber);
+		//System.out.println(apartment.getUlica()+" "+apartment.getGrad()+ "" +apartment.getBroj_stana()+" "+apartment.getZip());
+		   String street = apartment.getUlica();
+		   int homeNumber = Integer.parseInt(apartment.getBroj_stana());
+		   String city = apartment.getGrad();
+		   String zips = (apartment.getZip()).replaceAll("\\s","");
+		   int zip = Integer.parseInt(zips);
+		   double latitude = apartment.getGeo_sirina();
+		   double longitude = apartment.getGeo_duzina();
+		//System.out.println(latitude + " "+longitude+" "+zip);
+		Location location = new Location(latitude, longitude, street, homeNumber,city,zip);
+		
+		String host_username = apartment.getDomacin();		
+		ArrayList<String> slike = (ArrayList<String>) apartment.getSlike();
+		double price = Double.parseDouble(apartment.getPrice());	
+		String v_prijave = apartment.getPrijava();
+		String v_odjave = apartment.getOdjava();
+		
+		List<String>sadrzaj = apartment.getSadrzaj();
+		ArrayList<Long>amenties =  new ArrayList<Long>();
+		for(String s : sadrzaj) {
+			long l = Integer.parseInt(s);
+			amenties.add(l);
+		}
+		
+		ArrayList<String> datumi = new ArrayList<String>();
+		String datum = apartment.getDatumi();
+		String[]dates = datum.split(",");
+		for(int i=0; i<dates.length; i++) {
+			datumi.add(dates[i]);
+		}
+		
+		Apartment a = new Apartment(type,roomsNumber,guestsNumber,location,datumi,host_username,slike,price,amenties,v_prijave,v_odjave);
+		a.setId(apartments.size()+1);
+	    a.setStatus("INACTIVE");
+	    apartments.put(a.getId(),a);
 	    saveApartments();
 	}
+	
+	
+	
+	
 	
 	@SuppressWarnings("resource")
 	public void saveApartments() {
@@ -82,25 +324,25 @@ public class ApartmentDAO {
 		    	}
 		    	
 		    	
-		    /*	JSONArray rDates = new JSONArray();
+		    	JSONArray rDates = new JSONArray();
 		    	if(!a.getRentDates().isEmpty()) {
-			    	for(Date d: a.getRentDates()) {
-			    		 rDates.add(d.getDate());
+			    	for(String d: a.getRentDates()) {
+			    		 rDates.add(d);
 			    	}
 		    	}
 		    	obj_apartment.put("rDates",rDates);
 
 		    	JSONArray aDates = new JSONArray();
 		    	if(!a.getAvailableDates().isEmpty()) {
-			    	for(Date d: a.getAvailableDates()) {
-			    		aDates.add(d.getDate());
+			    	for(String d: a.getAvailableDates()) {
+			    		aDates.add(d);
 			    	}
 		    	}
 		    	obj_apartment.put("aDates",aDates);
 		    	
-		        if(a.getHost()!=null) {
-		        	obj_apartment.put("host",a.getHost().getUsername());
-		        }
+		        
+		        obj_apartment.put("host",a.getHost_username());
+		        
 		        
 		        JSONArray comments = new JSONArray();
 		        if(!a.getComments().isEmpty()) {
@@ -125,12 +367,8 @@ public class ApartmentDAO {
 		    	
 		    	JSONArray amenties = new JSONArray();
 		    	if(!a.getAmenties().isEmpty()) {
-		    		for(Amenties amentie : a.getAmenties()) {
-		    			JSONObject amentieJson = new JSONObject();
-		    			amentieJson.put("id", amentie.getId());
-		    			amentieJson.put("name", amentie.getName());
-		    			amentieJson.put("description", amentie.getDescription());
-		    			amenties.add(amentieJson);
+		    		for(long l: a.getAmenties()) {
+		    			amenties.add(l);
 		    		}
 		    	}
 		    	obj_apartment.put("amenties",amenties);
@@ -141,12 +379,12 @@ public class ApartmentDAO {
 		    			reservations.add(r.getId());
 		    		}
 		    	}
-		    	obj_apartment.put("reservations", reservations);*/
+		    	obj_apartment.put("reservations", reservations);
 		    	
 		    	list_apartments.add(obj_apartment);
 		 } try {
-				System.out.println(path+"/apartments.json");		
-				FileWriter fw = new FileWriter(path+"/apartments.json"); 
+				System.out.println(path+"/data/apartments.json");		
+				FileWriter fw = new FileWriter(path+"/data/apartments.json"); 
 				fw.write(list_apartments.toJSONString());
 				fw.flush();
 		}catch(Exception e) {
@@ -155,11 +393,13 @@ public class ApartmentDAO {
 		
 	}
 	
+	
+	
 	public void loadApartments() {
 		System.out.println("---ucitavanje apartmana---");
 		JSONParser parser = new JSONParser();
 		try {
-			Object obj = parser.parse(new FileReader(path+"/apartments.json"));
+			Object obj = parser.parse(new FileReader(path+"/data/apartments.json"));
 					
 			JSONArray jsonArray = (JSONArray) obj;
 			System.out.println(jsonArray);
@@ -172,7 +412,7 @@ public class ApartmentDAO {
 				a.setRoomsNumber(((Long)jsonObject.get("roomsNumber")).intValue());
 				a.setGuestsNumber(((Long)jsonObject.get("guestsNumber")).intValue());
 				
-				/*JSONObject loc_json = (JSONObject) jsonObject.get("location");
+				JSONObject loc_json = (JSONObject) jsonObject.get("location");
 				System.out.println(loc_json.toJSONString());
 				Location location = new Location();
 				location.setLatitude((double)loc_json.get("latitude"));
@@ -180,29 +420,37 @@ public class ApartmentDAO {
 				location.setAddress((String)loc_json.get("address"));
 				a.setLocation(location);
 				
-				/*JSONArray rDates = (JSONArray) jsonObject.get("rDates");
-				List<Date> rentDates = new ArrayList<Date>();
+				JSONArray rDates = (JSONArray) jsonObject.get("rDates");
+				List<String> rentDates = new ArrayList<String>();
 				Iterator<String> iter = rDates.iterator();
 				while(iter.hasNext()) {
 					String d = (String) iter.next();	
-					Date rdate = new Date(d);
-					rentDates.add(rdate);
+					rentDates.add(d);
 				}
 				a.setRentDates(rentDates);
 				
+				
 				JSONArray aDates = (JSONArray) jsonObject.get("aDates");
-				List<Date> availableDates = new ArrayList<Date>();
+				List<String> availableDates = new ArrayList<String>();
 				Iterator<String> iter2 = aDates.iterator();
 				while(iter2.hasNext()) {
 					String d = (String) iter2.next();	
-					Date adate = new Date(d);
-					availableDates.add(adate);
+					availableDates.add(d);
 				}
-				a.setRentDates(availableDates);
+				a.setAvailableDates(availableDates);
 				
-				//user
+				a.setHost_username((String)jsonObject.get("host"));
+				a.setType((String)jsonObject.get("type"));
 				
-				//komentari
+				JSONArray aComments = (JSONArray) jsonObject.get("comments");
+				List<Comment> comments = new ArrayList<Comment>();
+				Iterator<String> iter3 = aComments.iterator();
+				while(iter3.hasNext()) {
+					String d = (String) iter3.next();	
+					//comments.add(d);
+				}
+				a.setComments(comments);
+				
 				
 				JSONArray imagesJSON = (JSONArray) jsonObject.get("images");
 				List<String> images = new ArrayList<String>();
@@ -218,18 +466,13 @@ public class ApartmentDAO {
 				a.setCheck_out_time((String)jsonObject.get("check_out"));
 				a.setStatus((String)jsonObject.get("status"));
 				
-				JSONArray amentiesJSON = (JSONArray) jsonObject.get("amenties");
-				List<Amenties> amentiesList = new ArrayList<Amenties>();
-				Iterator<JSONObject> iter5 = amentiesJSON.iterator();
+				JSONArray amenties = (JSONArray) jsonObject.get("amenties");
+				List<Long> ament = new ArrayList<Long>();
+				Iterator<Long> iter5 = amenties.iterator();
 				while(iter5.hasNext()) {
-					JSONObject amentie = iter5.next();
-					Amenties amenties =new Amenties();
-					amenties.setId((Long)amentie.get("id"));
-					amenties.setName((String)amentie.get("name"));
-					amenties.setDescription((String)amentie.get("description"));
-					amentiesList.add(amenties);
+					long d = (long)iter5.next();
+					ament.add(d);
 				}
-				a.setAmenties(amentiesList);*/
 				
 				//reservations
 				apartments.put(a.getId(),a);
@@ -245,9 +488,8 @@ public class ApartmentDAO {
 	}
 	
 	
-	public Apartment findApartmentById(Long id) {
-		return apartments.get(id);
-	}
+	
 
 	
+
 }

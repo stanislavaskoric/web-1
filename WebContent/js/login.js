@@ -12,13 +12,13 @@ function login() {
         let password = $('input[name = "password"]').val();
         if(!username){
             $('#errUsername').text('Neophodno je uneti korisnicko ime.');
-            $('#errPassword').text("");
-            $("#err").text("");
+            $('#errPassword').val("");
+            $("#err").val("");
             $('input[name="email"]').focus();
         }else if(!password){
             $('#errPassword').text('Neophodno je uneti lozinku');
-            $('#errUsername').text("");
-            $("#err").text("");
+            $('#errUsername').val("");
+            $("#err").val("");
             $('input[name="password"]').focus();
         }
         else{
@@ -34,12 +34,12 @@ function login() {
                 success : function(){
                   //  alert(window.location.href);
                     window.location.href = "http://localhost:8080/PocetniREST/";
-                    alert('Logovanje je uspesno!');
+                    alert('Dobrodosli!');
                 },
                error : function(message){
                     $('#err').text(message.responseText);
-                    $('#errUsername').text("");
-                    $('#errPassword').text("");
+                    $('#errUsername').val("");
+                    $('#errPassword').val("");
                }
             });
         }
@@ -110,40 +110,40 @@ function registerGuest(){
 
 function cleanErrors(name){
     if(name === "username"){
-        $(errfirstName).text("");
-        $(errlastName).text("");
-        $(errGender).text("");
-        $(errPass).text("");
-        $(errPassA).text("");
+        $(errfirstName).val("");
+        $(errlastName).val("");
+        $(errGender).val("");
+        $(errPass).val("");
+        $(errPassA).val("");
     }else if(name === "firstName"){
-        $(errUsername).text("");
-        $(errlastName).text("");
-        $(errGender).text("");
-        $(errPass).text("");
-        $(errPassA).text("");
+        $(errUsername).val("");
+        $(errlastName).val("");
+        $(errGender).val("");
+        $(errPass).val("");
+        $(errPassA).val("");
     }else if(name === "lastName"){
-        $(errUsername).text("");
-        $(errfirstName).text("");
-        $(errGender).text("");
-        $(errPass).text("");
-        $(errPassA).text("");
+        $(errUsername).val("");
+        $(errfirstName).val("");
+        $(errGender).val("");
+        $(errPass).val("");
+        $(errPassA).val("");
     }else if(name === "gender"){
-        $(errUsername).text("");
-        $(errfirstName).text("");
-        $(errlastName).text("");
-        $(errPass).text("");
-        $(errPassA).text("");
+        $(errUsername).val("");
+        $(errfirstName).val("");
+        $(errlastName).val("");
+        $(errPass).val("");
+        $(errPassA).val("");
     }else if(name === "password"){
-        $(errUsername).text("");
-        $(errfirstName).text("");
-        $(errlastName).text("");
-        $(errGender).text("");
-        $(errPassA).text("");
+        $(errUsername).val("");
+        $(errfirstName).val("");
+        $(errlastName).val("");
+        $(errGender).val("");
+        $(errPassA).val("");
     }else if(name === "passwordAgain"){
-        $(errUsername).text("");
-        $(errfirstName).text("");
-        $(errlastName).text("");
-        $(errGender).text("");
-        $(errPass).text("");
+        $(errUsername).val("");
+        $(errfirstName).val("");
+        $(errlastName).val("");
+        $(errGender).val("");
+        $(errPass).val("");
     }
 }

@@ -5,12 +5,12 @@ package beans;
 public class Reservation {
 	
 	private long id;
-	private Apartment apartment;
-	private Date startDate;
+	private long apartment_id;
+	private String startDate;
 	private int nightsNumber;
 	private double finalPrice;
 	private String message;
-	private Guest guest;
+	private String guest_username;
 	private String status; //CREATE,DENIED,CANCELED,ACCEPT,COMPLETED
 
 	
@@ -29,19 +29,19 @@ public class Reservation {
 		this.id = id;
 	}
 
-	public Apartment getApartment() {
-		return apartment;
+	public long getApartment() {
+		return apartment_id;
 	}
 
-	public void setApartment(Apartment apartment) {
-		this.apartment = apartment;
+	public void setApartment(Long apartment_id) {
+		this.apartment_id = apartment_id;
 	}
 
-	public Date getStartDate() {
+	public String getStartDate() {
 		return startDate;
 	}
 
-	public void setStartDate(Date startDate) {
+	public void setStartDate(String startDate) {
 		this.startDate = startDate;
 	}
 
@@ -69,12 +69,12 @@ public class Reservation {
 		this.message = message;
 	}
 
-	public Guest getGuest() {
-		return guest;
+	public String getGuest() {
+		return guest_username;
 	}
 
-	public void setGuest(Guest guest) {
-		this.guest = guest;
+	public void setGuest(String guest_username) {
+		this.guest_username = guest_username;
 	}
 
 	public String getStatus() {

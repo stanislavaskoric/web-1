@@ -1,6 +1,11 @@
 $(document).ready(function(){
- //provera ko je ulogovan
-	var loginUser;
+	
+	$('#addCards').show();
+	$('#unknownUser').show();
+	loadApartmentAd();         //ucitavam apartmane za prikaz
+	
+    
+	var loginUser;           //trenutno ulogovani korisnik
 	$.ajax({
         type : "get",
         url : "rest/getActive",
@@ -13,27 +18,26 @@ $(document).ready(function(){
                 $('#li_logout').show();
                 $('#li_login').hide();
                 $('#li_signup').hide();
+                $('#addCards').hide();
+                $('#forAllUsers').show();
+                if(loginUser.role === "ADMIN"){
+                	$('#adminSidebar').show();
+                	$('#unknownUser').hide();
+                }
+                if(loginUser.role === "HOST"){
+                	console.log("host usla")
+                	$('#hostSidebar').show();
+                	$('#unknownUser').hide();
+                }
             }
         }
     });	
+
 		
-/* BAR SA STRANE */	
-$('#li_adminProfil').on("click",function(){
-	console.log("KLIK NA ADMIN PROFIL");
-	$('#adminProfil').show();
-	$('#dsearchUsers').hide();
-	changeAdmin();
-	
-});
 
 
-$('#li_search').on("click",function(){
-	$('#dsearchUsers').show();
-	$('#adminProfil').hide();
-});
 
-
-/* LOGOUT USERA */ 
+/****************************************************** LOGOUT USERA **************************************************/ 
 $('#li_logout').on("click",function(){
 	$.ajax({
         type : "get",
@@ -49,7 +53,7 @@ $('#li_logout').on("click",function(){
 });
 
 
-/* IZMENA PROFILA ADMINA */
+/***************************************** IZMENA PROFILA SVIH KORISNIKA *********************************************/
     var change_property; //koje polje na profilu menjam
 
 	function changeAdmin(){
@@ -109,7 +113,7 @@ $('#li_logout').on("click",function(){
 	
 	
 
-	$('#button_changeAdmin').on("click",function(){  //funkcija koja cuva izmenu nekog polja profila korisnika
+	$('#button_changeAdmin').on("click",function(){  //funkcija koja cuva izmenu polja profila korisnika
 		 if(change_property === "firstName"){
 			 var change = $('#modalChangeAdmin').val();
 			 if(change === ""){ 
@@ -153,8 +157,8 @@ $('#li_logout').on("click",function(){
 	
 });
 
-
-function writeAdmin(admin){ //ispisem podatke admina
+/*************funkcije za profil info****************/
+function writeAdmin(admin){ //ispisem podatke admina u tabelu
 	console.log("write");
 	console.log(admin);
 	var username = $('#admin_username');
@@ -192,3 +196,53 @@ function changeUserInfo(admin){
          }
    });
 }
+
+
+/********************funkcije za prikaz kartica apartmana*********************/
+var brojacApartmana = 0;
+
+function addApartmentCards(apartment){
+	if((brojacApartmana % 3) === 0){        // u red idu 3 oglasa
+        $('#tabela_pocetna tbody').append($('<tr></tr>'));
+    }
+	//dodati jos negde id
+	var td = $('<td style="padding: 10px">'+
+			   '<div class="container" style=" width:300px">'+
+			   '<div class="card" id="'+  apartment.id +'">'+
+			   '<img class="card-img-top" alt="Card image" style="width:100%" src='+ apartment.img + '>'+
+			   '<div class="card-body">'+
+			   '<h4 class="card-title">'+ apartment.address + '</h4>'+
+			   '<p class="card-text">'+apartment.description+'</p></div></div></div></td>');
+
+	 $("#tabela_pocetna tbody:last-child").append(td);
+	    brojacApartmana += 1;
+}
+
+function loadApartmentAd(){
+	
+	$.ajax({
+        type : "get",
+        url : "rest/apartment/",
+        contentType : "application/json",
+        success : function(response){
+            if(response !== undefined){     
+               console.log(response)
+               for(var app of response){
+            	   console.log(app);
+            	   addApartmentCards(app);
+               }
+            }
+        }
+    });	
+}
+
+
+
+
+
+
+
+
+
+
+

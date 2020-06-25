@@ -4,8 +4,11 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -13,7 +16,6 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import beans.Apartment;
-import beans.Date;
 import beans.Guest;
 import beans.Reservation;
 
@@ -21,23 +23,46 @@ import beans.Reservation;
 public class ReservationDAO {
 	
 	private HashMap<Long,Reservation> reservations;
+	private HashMap<Long,Apartment> apartments;
+	private HashMap<String,Guest>guests;
 	private String path;
 	
 	public ReservationDAO(String path,HashMap<String,Guest>guests , HashMap<Long,Apartment>apartments) {
 		this.reservations = new HashMap<Long, Reservation>();
 		this.path = path;
-		this.loadReservations(guests, apartments);
+		this.apartments = apartments;
+		this.guests = guests;
+		//this.loadReservations(guests, apartments);
 	}
 	
-	public void addReservation(Reservation reservation,Guest guest,Apartment a) {
+	public void addReservation(Reservation reservation, double pricePerNight, List<LocalDate> holidayDays) {
 		System.out.println("---add reservation---");
 		//proveriti da li je apartman raspoloziv
-		reservation.setId(reservations.size()+1);     //postaviti id na neki slucajni broj-zbog brisanja
+		reservation.setId(reservations.size()+1);     
 		reservation.setStatus("CREATE");
-		reservation.setGuest(guest);
-		reservation.setApartment(a);
+		
+		int nightsNumber = reservation.getNightsNumber();
+		double price = nightsNumber * pricePerNight;
+		
+		//variranje cene rezervacije
+		String date = reservation.getStartDate();
+		String []dateA = date.split("-");
+		LocalDate ld = LocalDate.of(Integer.parseInt(dateA[0]),Integer.parseInt(dateA[1]),Integer.parseInt(dateA[2]));
+		DayOfWeek dayOfWeek = ld.getDayOfWeek();
+		int numberOfDay = dayOfWeek.getValue();
+		System.out.println(price);
+		if(numberOfDay == 5 || numberOfDay == 6 || numberOfDay == 7) {
+			price*= 0.9;
+		}
+		for(LocalDate hd: holidayDays) {
+			if(hd.equals(ld)) {
+				price*= 1.05;
+			}
+		}
+		System.out.println(price);
+		
 		reservations.put(reservation.getId(),reservation);
-		saveReservations();
+		//saveReservations();
 	}
 	
 	
@@ -49,12 +74,12 @@ public class ReservationDAO {
 			Reservation r = reservations.get(id_res);
 			JSONObject json_res = new JSONObject();
 			json_res.put("id", r.getId());
-			json_res.put("apartment", r.getApartment().getId());
-			json_res.put("startDate", r.getStartDate().getDate());
+			json_res.put("apartment", r.getApartment());
+			json_res.put("startDate", r.getStartDate());
 			json_res.put("nightsNumber", r.getNightsNumber());
 			json_res.put("finalPrice", r.getFinalPrice());
 			json_res.put("message", r.getMessage());
-			json_res.put("guest", r.getGuest().getUsername());
+			json_res.put("guest", r.getGuest());
 			json_res.put("status", r.getStatus());
 			list.add(json_res);
 		} try{
@@ -81,17 +106,16 @@ public class ReservationDAO {
 				Reservation reservation = new Reservation();
 				
 				reservation.setId((Long)jsonObject.get("id"));
-				reservation.setStartDate(new Date((String)jsonObject.get("startDate")));
+				reservation.setStartDate((String)jsonObject.get("startDate"));
 				reservation.setNightsNumber(((Long)jsonObject.get("nightsNumber")).intValue());
 				reservation.setFinalPrice((Double)jsonObject.get("finalPrice"));
 				reservation.setMessage((String)jsonObject.get("message"));
 				
 				String username = (String)jsonObject.get("guest");
-				reservation.setGuest(guests.get(username));
+				reservation.setGuest(username);
 				
 				Long id_apartment = (Long)jsonObject.get("apartment");
-				Apartment a = apartments.get(id_apartment);
-				reservation.setApartment(a);
+				reservation.setApartment(id_apartment);
 				
 				reservation.setStatus((String)jsonObject.get("status"));
 				reservations.put(reservation.getId(), reservation);			
