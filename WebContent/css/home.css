@@ -298,8 +298,6 @@ li.str a:hover:not(.active) {
     cursor: pointer;
     text-decoration-line: underline;
     color: blue;
-    webkit-filter: blur(1px); /* Chrome, Safari, Opera */
-    filter: blur(1px);
 }
 
 
@@ -313,5 +311,10 @@ table#tab_pretraga .opseg{
     color: red;
 }
 
+/***********************************DATAPICKER-HIGHLIGHTED DATES************/
+.highlight a{
+  background-color: #29f274 !important;
+  color: #ffffff !important;
+}
 
 

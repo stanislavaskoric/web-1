@@ -46,7 +46,7 @@ public class Apartment {
 		this.location = l;
 		this.rentDates = dates;
 		this.host_username = host;
-		this.availableDates = new ArrayList<String>();
+		this.availableDates = dates;
 		this.comments = new ArrayList<Comment>();
 		this.images = imgs;
 		this.price = p;

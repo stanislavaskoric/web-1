@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -61,10 +62,42 @@ public class ApartmentDAO {
 	
 	
 	
+	
+	
 	public Apartment findApartmentById(Long id) {
 		return apartments.get(id);
 	}
 	
+	
+	public Collection<String> getDateForReservation(Long apartment_id){   //radi samo sa oblikom 2-1-2020
+		Apartment a = findApartmentById(apartment_id);
+		List<String>dates = a.getAvailableDates();
+		List<String>ret = new ArrayList<String>();
+		for(String s : dates) {
+			String []sa = s.split("/"); // 25/06/2020
+			String d= sa[0].replaceFirst("^0+(?!$)", "");
+			String m= sa[1].replaceFirst("^0+(?!$)", "");
+			String t = d+"-"+m+"-"+sa[2];
+			System.out.println(t);
+			ret.add(t);
+      	}
+		return ret;
+	}
+	
+	
+	public List<LocalDate> getAvailableDays(Long id){
+		Apartment a = findApartmentById(id);
+		List<String> ad = a.getAvailableDates();
+		List<LocalDate> ret = new ArrayList<LocalDate>();
+		for(String s : ad) {
+			String []dateA = s.split("/");
+			System.out.println(s);
+			LocalDate ld = LocalDate.of(Integer.parseInt(dateA[2]),Integer.parseInt(dateA[1]),Integer.parseInt(dateA[0]));
+			ret.add(ld);
+		}
+		return ret;
+	}
+		
 	
 	public double getPricePerNight(Long id) {
 		Apartment a = apartments.get(id);
@@ -397,6 +430,7 @@ public class ApartmentDAO {
 	
 	public void loadApartments() {
 		System.out.println("---ucitavanje apartmana---");
+		System.out.println(path);
 		JSONParser parser = new JSONParser();
 		try {
 			Object obj = parser.parse(new FileReader(path+"/data/apartments.json"));
@@ -413,7 +447,6 @@ public class ApartmentDAO {
 				a.setGuestsNumber(((Long)jsonObject.get("guestsNumber")).intValue());
 				
 				JSONObject loc_json = (JSONObject) jsonObject.get("location");
-				System.out.println(loc_json.toJSONString());
 				Location location = new Location();
 				location.setLatitude((double)loc_json.get("latitude"));
 				location.setLongitude((double)loc_json.get("longitude"));
@@ -431,6 +464,7 @@ public class ApartmentDAO {
 				
 				
 				JSONArray aDates = (JSONArray) jsonObject.get("aDates");
+				System.out.println("HEREEEE"+aDates);
 				List<String> availableDates = new ArrayList<String>();
 				Iterator<String> iter2 = aDates.iterator();
 				while(iter2.hasNext()) {

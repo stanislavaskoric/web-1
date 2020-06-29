@@ -56,6 +56,8 @@ public class ApartmentService {
 		
 	}
 	
+	
+	
 	@GET
 	@Path("/")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -87,6 +89,17 @@ public class ApartmentService {
 		ApartmentDAO apartments = (ApartmentDAO) servletContext.getAttribute("apartments");
 		return apartments.getSort(type);
 	}
+	
+	
+	@GET
+	@Path("/adates")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Collection<String> getAvailableDatesForReservations(@QueryParam("id")Long id) {
+		System.out.println("*****GET AVAILABLE DATES*****");
+		ApartmentDAO apartments = (ApartmentDAO) servletContext.getAttribute("apartments");
+		return apartments.getDateForReservation(id);
+	}
+	
 	
 
 }
