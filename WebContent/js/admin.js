@@ -1,28 +1,5 @@
 $(document).ready(function(){
-	
-	/* BAR SA STRANE */	
-	$('#li_adminProfil').on("click",function(){
-		console.log("KLIK NA ADMIN PROFIL");
-		$('#adminProfil').show();
-		$('#dsearchUsers').hide();
-		$('#adminAmentiesTable').hide();
-		$('#map').hide();
-		$('#infoAddApartment').hide();
-		$('#myAddApartmentModal').hide();
-		$('#modHoliday').hide();
-		changeAdmin();
 		
-	});
-
-	$('#li_adminSearch').on("click",function(){
-		$('#dsearchUsers').show();
-		$('#adminProfil').hide();
-		$('#adminAmentiesTable').hide();
-		$('#modHoliday').hide();
-	});
-	
-	
-	
 /**********KREIRANJE PRAZNIKA****************************/	
 	
 	$('#li_holidayDays').on("click",function(){

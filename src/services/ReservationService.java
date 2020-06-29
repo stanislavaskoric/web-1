@@ -25,7 +25,7 @@ import dao.UserDAO;
 
 
 
-@Path("reservation")
+@Path("/reservation")
 public class ReservationService {
 	
 	@Context
@@ -76,9 +76,14 @@ public class ReservationService {
 		
 		double price = apartments.getPricePerNight(reservation.getApartment());
 		List<LocalDate> holidays = codebooks.getHolidayDayes();
-		reservations.addReservation(reservation,price,holidays);
+		List<LocalDate> available = apartments.getAvailableDays(reservation.getApartment());
+		boolean fleg = reservations.addReservation(reservation,price,holidays,available);
 		
-		return Response.status(200).build();
+		if(fleg) {
+			return Response.status(200).build();
+		}else {
+			return Response.status(400).entity("Rezervaciju nije moguce izvrsiti za navedene datume!").build();
+		}
 		
 	}
 	

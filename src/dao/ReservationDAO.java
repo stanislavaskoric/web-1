@@ -6,6 +6,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -23,34 +25,64 @@ import beans.Reservation;
 public class ReservationDAO {
 	
 	private HashMap<Long,Reservation> reservations;
-	private HashMap<Long,Apartment> apartments;
-	private HashMap<String,Guest>guests;
 	private String path;
 	
 	public ReservationDAO(String path,HashMap<String,Guest>guests , HashMap<Long,Apartment>apartments) {
 		this.reservations = new HashMap<Long, Reservation>();
 		this.path = path;
-		this.apartments = apartments;
-		this.guests = guests;
-		//this.loadReservations(guests, apartments);
+		this.loadReservations();
 	}
 	
-	public void addReservation(Reservation reservation, double pricePerNight, List<LocalDate> holidayDays) {
+	
+	public Collection<Reservation> getAllReservation() {
+		return reservations.values();
+	}
+	
+	
+	public Collection<Reservation> getAllGuestReservation(String gu) {
+		List<Reservation>ret = new ArrayList<Reservation>();
+		for(Reservation r: reservations.values()) {
+			if(gu.equals(r.getGuest())) {
+				ret.add(r);
+			}
+		}
+		return ret;
+	}
+	
+	
+	public boolean isAvailable(LocalDate ld, int n, List<LocalDate>ad) {
+		for(int i=0; i<n; i++) {
+			LocalDate temp = ld.plusDays(i+1);
+			if(!ad.contains(temp)) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	
+	
+	public boolean addReservation(Reservation reservation, double pricePerNight, List<LocalDate> holidayDays,List<LocalDate> ad) {
 		System.out.println("---add reservation---");
 		//proveriti da li je apartman raspoloziv
+		int nightsNumber = reservation.getNightsNumber();
+		String date = reservation.getStartDate();
+		System.out.println("SD"+date);
+		String []dateA = date.split("/");
+		LocalDate ld = LocalDate.of(Integer.parseInt(dateA[2]),Integer.parseInt(dateA[0]),Integer.parseInt(dateA[1]));
+		System.out.println("SD"+ld);
+		if(!isAvailable(ld,nightsNumber,ad)) {
+			return false;
+		}
+		
 		reservation.setId(reservations.size()+1);     
 		reservation.setStatus("CREATE");
 		
-		int nightsNumber = reservation.getNightsNumber();
 		double price = nightsNumber * pricePerNight;
 		
 		//variranje cene rezervacije
-		String date = reservation.getStartDate();
-		String []dateA = date.split("-");
-		LocalDate ld = LocalDate.of(Integer.parseInt(dateA[0]),Integer.parseInt(dateA[1]),Integer.parseInt(dateA[2]));
 		DayOfWeek dayOfWeek = ld.getDayOfWeek();
 		int numberOfDay = dayOfWeek.getValue();
-		System.out.println(price);
 		if(numberOfDay == 5 || numberOfDay == 6 || numberOfDay == 7) {
 			price*= 0.9;
 		}
@@ -59,10 +91,10 @@ public class ReservationDAO {
 				price*= 1.05;
 			}
 		}
-		System.out.println(price);
-		
+		reservation.setFinalPrice(price);
 		reservations.put(reservation.getId(),reservation);
-		//saveReservations();
+		saveReservations();
+		return true;
 	}
 	
 	
@@ -92,7 +124,7 @@ public class ReservationDAO {
 		} 
 	}
 	
-	public void loadReservations(HashMap<String,Guest>guests, HashMap<Long,Apartment>apartments) {
+	public void loadReservations() {
 		System.out.println("---load reservations---");
 		JSONParser parser = new JSONParser(); 
 		try {

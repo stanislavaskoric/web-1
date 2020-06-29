@@ -9,6 +9,7 @@
      <script src="js/admin.js"></script>
      <script src="js/host.js"></script>
      <script src="js/search.js"></script>
+     <script src="js/guest.js"></script>
      
      
      <link rel="stylesheet" type="text/css" href="css/home.css">
@@ -39,6 +40,12 @@
        <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker3.min.css" rel="stylesheet">
        <script type="text/javascript"  src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
        
+      <!-- Enable specific dates -->
+       <link href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" rel="stylesheet" />
+       <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+       <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+       
+ 
  
 </head>
 <body>
@@ -64,6 +71,9 @@
         </div>
         <div id="hostSidebar" hidden="true">
             <li class="str" id="li_adminAddApartment"><a>Dodaj novi apartman</a></li>
+        </div>
+        <div id="guestSidebar" hidden="true">
+            <li class="str" id="li_adminAddApartment"><a>Pretrazi apartmane</a></li>
         </div>
         <div id="unknownUser" hidden="true">
             <li class="str" id="li_searchApartment"><a>Pretrazi apartmane</a></li>
@@ -398,7 +408,7 @@
     
     
      <!-- -----------------------------PREGLED APARTMANAA(POCETNA STRANA)-------------------------------------------------------------- -->
-     <div id="addCards" style="margin-left:22%">
+     <div id="addCards" style="margin-left:22%" hidden="true">
          <table id="tabela_pocetna">
             <tbody>
             </tbody>
@@ -494,13 +504,55 @@
           </div>
         </div>
     </div>
+        
+     
+     <!-- ------------------------------DETALJI O APARTMANU-------------------------------------------------------------- -->
+     <div style="margin-left:25%" id="apartmentDetails"  hidden="true">
+         <h1>Detaljiii o apartmanu</h1>
+         <button id="addReservationButton" class="btn btn-primary">Rezervisi apartman</button>
+     
+     </div>
      
      
-     
-     
-     
-     
-     
+     <!-- -----------------------------MODALNI ZA KREIRANJE REZERVACIJE------------------------------------------------ -->
+      <div id="modCreateReservation" class="modal" hidden="true">
+        <!-- Modal content -->
+        <div class="modal-content" style="width: 410px; height:300px;">
+            <div class="modal-header">
+                <span class="closeCreateReservation" >&times;</span>
+            </div>
+            <div class="modal-body" style="margin-left:10%;">
+                <form>
+                    <table id="tab_createReservation">
+                         <tr>
+                            <th>Datum pocetka boravka:</th>
+                            <td>
+                                <input style="width:120" id="datapicker" >
+                                <p class="err" align="right" id="errReservationStartDate"></p>
+                            </td>
+                         </tr>
+                          <tr>
+                            <th>Broj nocenja:</th>
+                            <td>
+                                <input style="width:120" id="resNumber" type="number">
+                                <p class="err" align="right" id="errReservationNumber"></p>
+                            </td>
+                         </tr>
+                         <tr>
+                            <th>Poruka domacinu:</th>
+                            <td>
+                                <textarea style="width:150; height:80" id="messageForHost"></textarea>
+                            </td>
+                         </tr>
+                    </table>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button id="submitReservation" class="btn btn-primary">Potvrdi rezervaciju</button>
+            </div>
+          </div>
+        </div>
+    </div>
     
     
     

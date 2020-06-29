@@ -1,7 +1,7 @@
 $(document).ready(function(){
 	
-	var hostUserName;
-	$.ajax({
+	var hostUserName;  //postavlja se pri logovanju
+	/*$.ajax({
         type : "get",
         url : "rest/getActive",
         contentType : "application/json",
@@ -10,7 +10,7 @@ $(document).ready(function(){
             	hostUserName = response.username;
             }
         }
-    });	
+    });	*/
 	
 	var numberInitMap = 0; //brojac za inicijalizaciju liste samo jednom
 	 var latitude="";
