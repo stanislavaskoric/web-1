@@ -5,6 +5,7 @@
      "firstName" : "petar",
      "lastName" : "peric",
      "gender" : "male",
+     "blocked" : false,
      "role" : "GUEST",
      "rentedApartments" : [],
      "reservations" : []
@@ -15,6 +16,18 @@
     "firstName" : "milena",
     "lastName" : "mikic",
     "gender" : "female",
+    "blocked" : false,
+    "role" : "GUEST" ,
+     "rentedApartments" : [],
+     "reservations" : []
+  },
+  {
+    "username" : "guest3",
+    "password" : "guest",
+    "firstName" : "sanja",
+    "lastName" : "sanjic",
+    "gender" : "female",
+    "blocked" : false,
     "role" : "GUEST" ,
      "rentedApartments" : [],
      "reservations" : []

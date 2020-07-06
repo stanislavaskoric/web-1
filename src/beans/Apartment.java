@@ -13,14 +13,16 @@ public class Apartment {
 	private List<String> rentDates;
 	private List<String> availableDates;
 	private String host_username;               //domacin
-	private List<Comment> comments;
 	private List<String> images;
 	private double price;
 	private String check_in_time;
 	private String check_out_time;
 	private String status;               //ACTIVE,INACTIVE
 	private List<Long> amenties;
-	private List<Reservation> reservations;
+	private List<Long> reservations;
+	private boolean active;
+	private String city;     //za search
+	private String country;
 	
 	
 	
@@ -29,13 +31,13 @@ public class Apartment {
 		this.guestsNumber = 0;
 		this.rentDates = new ArrayList<String>();
 		this.availableDates = new ArrayList<String>();
-		this.comments = new ArrayList<Comment>();
 		this.images = new ArrayList<String>();
 		this.price = 0;
 		this.amenties = new ArrayList<Long>();
-		this.reservations = new ArrayList<Reservation>();
+		this.reservations = new ArrayList<Long>();
 		this.check_in_time = "14:00";
 		this.check_out_time = "10:00";
+		this.active = true;
 	}
 
 	public Apartment(String t, int rn, int gn, Location l, ArrayList<String>dates, String host, ArrayList<String>imgs, 
@@ -47,14 +49,13 @@ public class Apartment {
 		this.rentDates = dates;
 		this.host_username = host;
 		this.availableDates = dates;
-		this.comments = new ArrayList<Comment>();
 		this.images = imgs;
 		this.price = p;
 		this.amenties = amenties;
-		this.reservations = new ArrayList<Reservation>();
+		this.reservations = new ArrayList<Long>();
 		this.check_in_time = in;
 		this.check_out_time = out;
-		
+		this.active = true;
 	}
 	
 
@@ -135,16 +136,6 @@ public class Apartment {
 	}
 
 
-	public List<Comment> getComments() {
-		return comments;
-	}
-
-
-	public void setComments(List<Comment> comments) {
-		this.comments = comments;
-	}
-
-
 	public List<String> getImages() {
 		return images;
 	}
@@ -205,13 +196,37 @@ public class Apartment {
 	}
 
 
-	public List<Reservation> getReservations() {
+	public List<Long> getReservations() {
 		return reservations;
 	}
 
 
-	public void setReservations(List<Reservation> reservations) {
+	public void setReservations(List<Long> reservations) {
 		this.reservations = reservations;
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
 	}
 	
 	

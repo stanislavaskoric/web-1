@@ -8,6 +8,8 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -19,24 +21,129 @@ import org.json.simple.parser.ParseException;
 
 import beans.Apartment;
 import beans.Guest;
+import beans.Host;
 import beans.Reservation;
+import beans.User;
 
 @SuppressWarnings("unchecked")
 public class ReservationDAO {
 	
 	private HashMap<Long,Reservation> reservations;
+	private HashMap<Long,Apartment> apartments;
+	private HashMap<String, User> systemUsers;
 	private String path;
 	
-	public ReservationDAO(String path,HashMap<String,Guest>guests , HashMap<Long,Apartment>apartments) {
+	public ReservationDAO(String path,HashMap<String,User>systemUsers , HashMap<Long,Apartment>apartments) {
 		this.reservations = new HashMap<Long, Reservation>();
+		this.apartments = apartments;
+		this.systemUsers = systemUsers;
 		this.path = path;
 		this.loadReservations();
 	}
+	
+	public Collection<Reservation> searchReservation(String guest, List<Reservation>res){
+		List<Reservation> ret = new ArrayList<Reservation>();
+		for(Reservation r: res) {
+			//System.out.println("rezervacijaaaaaaaaaaa"+r.getGuest());
+			if(r.getGuest().toLowerCase().equals(guest.toLowerCase())) {
+				//System.out.println("dodajem"+r.getGuest());
+				ret.add(r);
+			}
+		}
+		return ret;
+	}
+	
+	public Collection<Reservation> filterReservation(String status, List<Reservation>res){
+		List<Reservation> ret = new ArrayList<Reservation>();
+		for(Reservation r: res) {
+			if(r.getStatus().toLowerCase().contains(status.toLowerCase())) {
+				ret.add(r);
+			}
+		}
+		return ret;
+	}
+	
+	public Collection<Reservation> sortReservation(String type, List<Reservation>ret){
+		Comparator<Reservation> compareByCost = (Reservation o1, Reservation o2) -> Double.compare(o1.getFinalPrice(), o2.getFinalPrice());
+	    if(type.equals("asceding")) {
+	    	Collections.sort(ret, compareByCost);
+	    }else {
+	    	Collections.sort(ret, compareByCost.reversed());
+	    }
+	    return ret;
+	}
+	
+	
+	public Collection<User> getAllUserByHost(String u) {
+		List<User> ret = new ArrayList<User>();
+		for(Reservation r : reservations.values()) {
+			Apartment a = apartments.get(r.getApartment());
+			if(a.getHost_username().equals(u)) {
+				User us = systemUsers.get(r.getGuest_username());
+				if(!ret.contains(us)) {
+					 ret.add(us);	
+				}
+			}
+		}
+		return ret;
+	}
+	
+	
+	public Collection<User> searchUserByHost(String host_username, String username, String gender, String role){
+		System.out.println("---search user by host---");
+		List<User> returnList = new ArrayList<User>();
+		if(username ==null && gender==null && role==null) {
+			return returnList;
+		}
+        
+		List<User> usersForSearch = (List<User>) getAllUserByHost(host_username);
+		
+		for(User u: usersForSearch) {
+			if(username.equals(u.getUsername()) || username.equals("")) {
+				if(gender.equals(u.getGender()) || gender.equals("")) {
+					if(role.toUpperCase().equals(u.getRole().toUpperCase()) || role.equals("")) {
+						returnList.add(u);
+					}
+				}
+			}
+		}
+		
+		
+		return returnList;
+	}
+	
 	
 	
 	public Collection<Reservation> getAllReservation() {
 		return reservations.values();
 	}
+	
+	
+	public List<Reservation> getApartmentReservation(Long id){
+		List<Reservation> ret = new ArrayList<Reservation>();
+		for(Reservation r: reservations.values()) {
+			if(r.getApartment() == id) {
+				ret.add(r);
+			}
+		}
+		return ret;
+	}
+	
+	
+	public boolean canCreateComment(Long id_apartment, String guest) {
+		List<Reservation> guestReservation = getApartmentReservation(id_apartment);
+		boolean fleg = false;
+		for(Reservation r: guestReservation) {
+			if(r.getGuest_username().equals(guest)) {
+				if(r.getStatus().equals("DENEID") || r.getStatus().equals("COMPLETED")) {
+					fleg=true;
+				}
+						
+			}
+		}
+		return fleg;
+	}
+	
 	
 	
 	public Collection<Reservation> getAllGuestReservation(String gu) {
@@ -50,6 +157,72 @@ public class ReservationDAO {
 	}
 	
 	
+	public Collection<Reservation> getAllHostReservation(String u) {
+		List<Reservation> ret = new ArrayList<Reservation>();
+		for(Reservation r : reservations.values()) {
+			Apartment a = apartments.get(r.getApartment());
+			if(a.getHost_username().equals(u)) {
+				if(!r.isFinish()) {
+					//finishReservation(r.getId());	
+				}
+				ret.add(r);
+			}
+		}
+		return ret;
+	}
+	
+	
+	public boolean acceptReservation(Long id) {
+		Reservation r = reservations.get(id);
+		if(r.getStatus().equals("CREATE")) {
+			r.setStatus("ACCEPT");
+			return true;
+		}
+		return false;
+	}
+	
+	
+	public boolean deniedReservation(Long id) {
+		Reservation r = reservations.get(id);
+		if(r.getStatus().equals("CREATE") || r.getStatus().equals("ACCEPT") ) {
+			r.setStatus("DENIED");
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean completeReservation(Long id) {
+		Reservation r = reservations.get(id);
+		if(r.getStatus().equals("ACCEPT") && r.isFinish()) {
+			r.setStatus("COMPLETE");
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean cancelReservation(Long id) {
+		Reservation r = reservations.get(id);
+		if(r.getStatus().equals("CREATE") || r.getStatus().equals("ACCEPT") ) {
+			r.setStatus("CANCEL");
+			return true;
+		}
+		return false;
+	}
+	
+	
+	public void finishReservation(Long id) {
+		Reservation r = reservations.get(id);
+			String date = r.getStartDate();
+			String []dateA = date.split("/");
+			LocalDate ld = LocalDate.of(Integer.parseInt(dateA[2]),Integer.parseInt(dateA[0]),Integer.parseInt(dateA[1]));
+			LocalDate finish_date = ld.plusDays(r.getNightsNumber());
+			LocalDate today_day = LocalDate.now();
+			if(today_day.isAfter(finish_date)) {
+				r.setFinish(true);
+			}
+	}
+	
+	
 	public boolean isAvailable(LocalDate ld, int n, List<LocalDate>ad) {
 		for(int i=0; i<n; i++) {
 			LocalDate temp = ld.plusDays(i+1);
@@ -60,7 +233,7 @@ public class ReservationDAO {
 		return true;
 	}
 	
-	
+
 	
 	public boolean addReservation(Reservation reservation, double pricePerNight, List<LocalDate> holidayDays,List<LocalDate> ad) {
 		System.out.println("---add reservation---");
@@ -93,6 +266,8 @@ public class ReservationDAO {
 		}
 		reservation.setFinalPrice(price);
 		reservations.put(reservation.getId(),reservation);
+		
+		
 		saveReservations();
 		return true;
 	}
@@ -113,6 +288,7 @@ public class ReservationDAO {
 			json_res.put("message", r.getMessage());
 			json_res.put("guest", r.getGuest());
 			json_res.put("status", r.getStatus());
+			json_res.put("finish", r.isFinish());
 			list.add(json_res);
 		} try{
 			System.out.println(path+"/reservations.json");		
@@ -150,7 +326,12 @@ public class ReservationDAO {
 				reservation.setApartment(id_apartment);
 				
 				reservation.setStatus((String)jsonObject.get("status"));
-				reservations.put(reservation.getId(), reservation);			
+				reservations.put(reservation.getId(), reservation);		
+				
+				boolean f = (boolean)jsonObject.get("finish");
+				reservation.setFinish(f);
+				
+				reservations.put(reservation.getId(), reservation);	
 			}			
 		}catch (FileNotFoundException e) {
 			e.printStackTrace();

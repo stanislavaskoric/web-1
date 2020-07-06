@@ -13,6 +13,7 @@ public class Admin extends User {
 		this.setLastName(u.getLastName());
 		this.setPassword(u.getPassword());
 		this.setGender(u.getGender());
+		this.setBlocked(u.isBlocked());
 		this.setRole("ADMIN");
 	}
 

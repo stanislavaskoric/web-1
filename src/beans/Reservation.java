@@ -12,12 +12,14 @@ public class Reservation {
 	private String message;
 	private String guest_username;
 	private String status; //CREATE,DENIED,CANCELED,ACCEPT,COMPLETED
+	private boolean finish;
 
 	
 	public Reservation() {
 		super();
 		this.nightsNumber = 1;
 		this.finalPrice = 0;
+		this.finish = false;
 	}
 
 	
@@ -83,6 +85,36 @@ public class Reservation {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+
+	public long getApartment_id() {
+		return apartment_id;
+	}
+
+
+	public String getGuest_username() {
+		return guest_username;
+	}
+
+
+	public boolean isFinish() {
+		return finish;
+	}
+
+
+	public void setApartment_id(long apartment_id) {
+		this.apartment_id = apartment_id;
+	}
+
+
+	public void setGuest_username(String guest_username) {
+		this.guest_username = guest_username;
+	}
+
+
+	public void setFinish(boolean finish) {
+		this.finish = finish;
 	}
 	
 	

@@ -38,7 +38,7 @@ public class AmentiesService {
 
 	@PostConstruct
 	public void init() {
-		if(servletContext.getAttribute("amentiess") == null) {
+		if(servletContext.getAttribute("amenties") == null) {
 			String p = servletContext.getRealPath("")+"/data";                
 			servletContext.setAttribute("amenties", new AmentiesDAO(p));
 		}		

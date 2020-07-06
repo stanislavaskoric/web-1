@@ -17,6 +17,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.MediaType;
 
+import beans.Host;
 import beans.User;
 import dao.UserDAO;
 
@@ -53,9 +54,28 @@ public class UserService {
 		User u = (User) users.addUser(user);		                    // dodajem jednog usera
 		
 		if(u == null) {
-			return Response.status(400).entity("Uneti username vec postoji!.").build();
+			return Response.status(400).entity("Uneti username vec postoji!").build();
+		}else {
+			HttpSession session = request.getSession();
+			session.setAttribute("user", u);
+			return  Response.status(200).build();
 		}
-		return  Response.status(200).build();
+	}
+	
+	
+	@POST
+	@Path("/createh")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response registrationHost(User user) {
+		System.out.println("*****REGISTRATION HOST*****");	
+		UserDAO users = (UserDAO) servletContext.getAttribute("users");
+        Host u = users.createHost(user);		                    // dodajem jednog usera
+		
+		if(u == null) {
+			return Response.status(400).entity("Uneti username za domacina vec postoji!").build();
+		}
+		return  Response.status(200).build();  
 	}
 	
 	
@@ -74,6 +94,10 @@ public class UserService {
 				return Response.status(400).entity("Korisnicko ime ili lozinka nisu ispravni").build();
 			}else {
 				//System.out.println(u.getRole()+"JEKOOOO");
+				System.out.println("blocked"+u.isBlocked());
+				if(u.isBlocked()) {
+					return Response.status(400).entity("Vas nalog je blokiran").build();
+				}
 				HttpSession session = request.getSession();
 				session.setAttribute("user", u);
 				return  Response.status(200).build();
@@ -125,6 +149,7 @@ public class UserService {
 			                            @QueryParam("gender") String gender,
 			                            @QueryParam("role") String role){
 		System.out.println("***SEARCH USERS***");
+		System.out.println(username+" "+gender+" "+role);
 		UserDAO users = (UserDAO) servletContext.getAttribute("users");
 		Collection<User> ret = users.searchUser(username, gender, role);
 		
@@ -144,7 +169,25 @@ public class UserService {
 	}
 	
 	
+	@GET
+	@Path("/")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Collection<User> getAllUsers(){
+		System.out.println("***GET USERS***");
+		UserDAO users = (UserDAO) servletContext.getAttribute("users");
+		Collection<User> ret = users.getSystemUsers().values();
+		
+		return ret;
+	}
    
-	
+	@GET
+	@Path("/block")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response blockUser(@QueryParam("username") String username) {
+		UserDAO users = (UserDAO) servletContext.getAttribute("users");
+	  	users.blocked(username);
+	    return Response.status(200).build();
+	}
 
+	
 }

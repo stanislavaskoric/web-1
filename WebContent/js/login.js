@@ -97,6 +97,8 @@ function registerGuest(){
                 contentType : 'application/json',
                 success : function(){
                     alert('Uspesno ste se registrovali!');
+                    window.location.href = "http://localhost:8080/PocetniREST/";
+                    alert('Dobrodosli!');
                 },
                error : function(message){
                     alert(message.responseText);

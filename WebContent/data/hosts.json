@@ -5,6 +5,7 @@
      "firstName" : "pera",
      "lastName" : "peric",
      "gender" : "male",
+     "blocked" : false,
      "role" : "HOST",
      "rentApartments" : []
   },
@@ -14,8 +15,19 @@
     "firstName" : "milena",
     "lastName" : "mikic",
     "gender" : "female",
+    "blocked" : false,
     "role" : "HOST",
     "rentApartments" : []
+  },
+  {
+     "username" : "host3",
+     "password" : "host",
+     "firstName" : "zika",
+     "lastName" : "zikic",
+     "gender" : "male",
+     "blocked" : false,
+     "role" : "HOST",
+     "rentApartments" : []
   }
 
 ]

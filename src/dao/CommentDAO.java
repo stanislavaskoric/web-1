@@ -4,8 +4,11 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -27,12 +30,47 @@ public class CommentDAO {
 		this.loadComments(guests, apartments);
 	}
 	
-	public void addComment(Comment comment, Guest g, Apartment a) {
+	
+	public void chooseComment(Long id) {
+		Comment c = comments.get(id);
+		c.setOdabran(true);
+		saveComments();
+	}
+	
+	public Collection<Comment> getAllAdmin(){
+		return comments.values();
+	}
+	
+	
+	public Collection<Comment> getActiveComment(Long id_ap){
+		List<Comment> ret = new ArrayList<Comment>();
+		for(Comment c: comments.values()) {
+			if(c.getApartment() == id_ap) {
+				if(c.isOdabran()) {
+					ret.add(c);
+				}
+			}
+		}
+		return ret;
+	}
+
+	public Collection<Comment> getHostsComment(List<Long> host_apartments){
+		List<Comment> ret = new ArrayList<Comment>();
+		if(host_apartments.size()>0) {
+			for(Comment c: comments.values()) {
+				if(host_apartments.contains(c.getApartment())) {
+					ret.add(c);
+				}
+			}
+		}
+		return ret;
+	}
+	
+		
+	public void addComment(Comment comment) {
 		System.out.println("--add comment--");
-		//proveriti da li nad ovim apartmanom gost moze da ostavi komenatar
-		comment.setId(comments.size()+1);      //postaviti na slucajnu vrednost
-		comment.setGuest(g);
-        comment.setApartment(a);	
+		comment.setId(comments.size()+1);   
+		comment.setOdabran(false);
         comments.put(comment.getId(), comment);
         saveComments();
 	}
@@ -46,10 +84,11 @@ public class CommentDAO {
 			Comment c = comments.get(id_comment);
 			JSONObject json_c = new JSONObject();
 			json_c.put("id", c.getId());
-			json_c.put("guest",c.getGuest().getUsername());
-			json_c.put("apartment", c.getApartment().getId());
+			json_c.put("guest",c.getGuest());
+			json_c.put("apartment", c.getApartment());
 			json_c.put("text", c.getText());
 			json_c.put("evaluation", c.getEvaluation());
+			json_c.put("odabran", c.isOdabran());
 			listComment.add(json_c);
 		} try{
 			System.out.println(path+"/comments.json");		
@@ -76,10 +115,11 @@ public class CommentDAO {
 				Comment c = new Comment();
 		
 				c.setId((Long)jsonObject.get("id"));
-				c.setGuest(guests.get((String)jsonObject.get("guest")));
-				c.setApartment(apartments.get((Long)jsonObject.get("apartment")));
+				c.setGuest((String)jsonObject.get("guest"));
+				c.setApartment((Long)jsonObject.get("apartment"));
 				c.setText((String)jsonObject.get("text"));
 				c.setEvaluation(((Long)jsonObject.get("evaluation")).intValue());
+				c.setOdabran((boolean)jsonObject.get("odabran"));
 				
 				comments.put(c.getId(), c);
 				
