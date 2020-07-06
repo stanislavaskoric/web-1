@@ -8,17 +8,19 @@ public class User {
 	private String lastName;
 	private String gender;
 	private String role;      //admin, host, guest
+	private boolean blocked;  //da li ga je admin blokirao
 	
 	public User() {
-		
+		this.blocked = false;
 	}
 	
-	public User(String u,String p, String f, String l, String g) {
+	public User(String u,String p, String f, String l, String g, boolean b) {
 		this.username = u;
 		this.password = p;
 		this.firstName = f;
 		this.lastName = l;
 		this.gender = g;
+		this.blocked = b;
 	}
 	  
 	public String getUsername() {
@@ -56,6 +58,14 @@ public class User {
 	}
 	public void setRole(String role) {
 		this.role = role;
+	}
+
+	public boolean isBlocked() {
+		return blocked;
+	}
+
+	public void setBlocked(boolean blocked) {
+		this.blocked = blocked;
 	}
 	  
 	  

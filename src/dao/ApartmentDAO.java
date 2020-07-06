@@ -1,5 +1,6 @@
 package dao;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -29,16 +30,19 @@ import beans.Location;
 import beans.Reservation;
 import dto.AdDTO;
 import dto.ApartmentDTO;
+import dto.ChangeDTO;
 
 
 @SuppressWarnings("unchecked")
 public class ApartmentDAO {
 	
 	private HashMap<Long, Apartment> apartments;       //mapa svih apartmana
+	private List<Amenties> amenties;                   //sifarnik sadrzaja
 	private String path;                               //putanja do contexta
 	
-	public ApartmentDAO(String path) {
+	public ApartmentDAO(String path, List<Amenties>amenties) {
 		this.apartments = new HashMap<Long, Apartment>();
+		this.amenties = amenties;
 		this.path=path;
 		this.loadApartments();
 		
@@ -61,11 +65,63 @@ public class ApartmentDAO {
 	}
 	
 	
+	public boolean deleteApartment(Long id) {
+		Apartment a = apartments.get(id);
+		boolean fleg = false;
+		if(a.isActive()) {
+			a.setActive(false);
+			fleg = true;
+			saveApartments();
+		}
+		return fleg;
+	}
+	
+	
+	
+	public List<String> getAmentiesFromApartment(Long id_apartment){
+		List<String> ret = new ArrayList<String>();
+		Apartment a = apartments.get(id_apartment);
+		List<Long> apartmentAmenties = a.getAmenties();
+		for(Amenties am : amenties) {
+		   if(apartmentAmenties.contains(am.getId()) && am.isActive()) {
+			   ret.add(am.getName());
+		   }
+		}
+		return ret;
+	}
+	
+	
+	public void changeAvailableDates(String ss, int n, Long id) {
+		Apartment a = findApartmentById(id);
+		List<String>availableDates = a.getAvailableDates();
+		int firstIndexForDeleted = 0;
+		String []dateA = ss.split("/");
+		String startDate = dateA[1]+"/"+dateA[0]+"/"+dateA[2];
+		for(String s : availableDates) {
+			if(s.equals(startDate)) {
+				break;
+			}
+			firstIndexForDeleted ++;
+		}
+		for(int i=0; i<n; i++) {
+			availableDates.remove(firstIndexForDeleted);
+			firstIndexForDeleted++;
+		}
+		
+		a.setAvailableDates(availableDates);
+		saveApartments();
+	}
 	
 	
 	
 	public Apartment findApartmentById(Long id) {
-		return apartments.get(id);
+		Apartment a = apartments.get(id);
+		if(a != null && a.isActive()) {
+			return a;
+		}else {
+			return null;
+		}
+		//return apartments.get(id);
 	}
 	
 	
@@ -98,6 +154,7 @@ public class ApartmentDAO {
 		return ret;
 	}
 		
+
 	
 	public double getPricePerNight(Long id) {
 		Apartment a = apartments.get(id);
@@ -106,23 +163,184 @@ public class ApartmentDAO {
 	
 	
 	
-	public List<AdDTO> findActiveAparment(){  //ubaciti da se samo aktivni vracaju
+	public List<AdDTO> findActiveAparment(){  
 		List<AdDTO> ret = new ArrayList<AdDTO>();
 		for(Apartment a: apartments.values()) {
-		       AdDTO ad = new AdDTO();
-		       ad.setId(a.getId());
-		       ad.setAddress(a.getLocation().getAddress());
-		       ad.setImg("./images/"+a.getImages().get(0));
-		       ad.setDescription("maksimalan kapacitet: "+a.getGuestsNumber()+"<br />"+
-		                         "cena od: "+a.getPrice()+" RSD");
-		       ret.add(ad);
+			  if(a.getStatus().equals("ACTIVE") && a.isActive()) {
+				  AdDTO ad = new AdDTO();
+			       ad.setId(a.getId());
+			       ad.setAddress(a.getLocation().getAddress());
+			     //  System.out.println("JELENA"+a.getImages().size());
+			       ad.setImg("./images/"+a.getImages().get(0));
+			       ad.setDescription("maksimalan kapacitet: "+a.getGuestsNumber()+"<br />"+
+			                         "cena od: "+a.getPrice()+" RSD");
+			       ret.add(ad);  
+			  }
+		}
+		return ret;
+	}
+	
+	public List<Apartment> findSearchApartment(){
+		List<Apartment> ret = new ArrayList<Apartment>();
+		for(Apartment a: apartments.values()) {
+			  if(a.getStatus().equals("ACTIVE") && a.isActive()) {
+			       ret.add(a);  
+			  }
 		}
 		return ret;
 	}
 	
 	
-	public Collection<Apartment> getSort(String type){
-		List<Apartment> ret = new ArrayList<Apartment>(apartments.values());
+	public List<AdDTO> findAllAparment(){  
+		List<AdDTO> ret = new ArrayList<AdDTO>();
+		for(Apartment a: apartments.values()) {
+			 if(a.isActive()) {
+				   AdDTO ad = new AdDTO();
+			       ad.setId(a.getId());
+			       ad.setAddress(a.getLocation().getAddress());
+			       ad.setImg("./images/"+a.getImages().get(0));
+			       ad.setDescription("maksimalan kapacitet: "+a.getGuestsNumber()+"<br />"+
+			                         "cena od: "+a.getPrice()+" RSD");
+			       ret.add(ad);   
+			 }
+		}
+		return ret;
+	}
+	
+	
+	public List<Apartment> findNotDeletedApartment(){
+		List<Apartment> ret = new ArrayList<Apartment>();
+		for(Apartment a: apartments.values()) {
+			if(a.isActive()) {
+				ret.add(a);
+			}
+		}
+		return ret;
+	}
+	
+	
+	public List<AdDTO> findAllHostActiveApartment(String host_username){  
+		List<AdDTO> ret = new ArrayList<AdDTO>();
+		for(Apartment a: findNotDeletedApartment()) {
+			 if(a.getStatus().equals("ACTIVE") && a.getHost_username().equals(host_username)) {
+				   AdDTO ad = new AdDTO();
+			       ad.setId(a.getId());
+			       ad.setAddress(a.getLocation().getAddress());
+			       ad.setImg("./images/"+a.getImages().get(0));
+			       ad.setDescription("maksimalan kapacitet: "+a.getGuestsNumber()+"<br />"+
+			                         "cena od: "+a.getPrice()+" RSD");
+			       ret.add(ad);   
+			 }
+		}
+		return ret;
+	}
+	
+	
+	public List<AdDTO> findAllHostInactiveApartment(String host_username){  
+		List<AdDTO> ret = new ArrayList<AdDTO>();
+		for(Apartment a: findNotDeletedApartment()) {
+			 if(a.getStatus().equals("INACTIVE") && a.getHost_username().equals(host_username)) {
+				   AdDTO ad = new AdDTO();
+			       ad.setId(a.getId());
+			       ad.setAddress(a.getLocation().getAddress());
+			       ad.setImg("./images/"+a.getImages().get(0));
+			       ad.setDescription("maksimalan kapacitet: "+a.getGuestsNumber()+"<br />"+
+			                         "cena od: "+a.getPrice()+" RSD");
+			       ret.add(ad);   
+			 }
+		}
+		return ret;
+	}
+	
+	
+	public List<Apartment> findAllHostApartment(String host_username){  
+		List<Apartment> ret = new ArrayList<Apartment>();
+		for(Apartment a: findNotDeletedApartment()) {
+			 if(a.getStatus().equals("ACTIVE") && a.getHost_username().equals(host_username)) {
+			       ret.add(a);   
+			 }
+		}
+		return ret;
+	}
+	
+	public List<Long> findHostsApartment(String host_username){  
+		List<Long> ret = new ArrayList<Long>();
+		for(Apartment a: findNotDeletedApartment()) {
+			 if(a.getHost_username().equals(host_username)) {
+			       ret.add(a.getId());   
+			 }
+		}
+		return ret;
+	}
+	
+	
+	
+	/////SORTIRANI APARTMANI HOST
+	public Collection<AdDTO> getSortHost(String type, String host_username){
+		List<Apartment> temp = findAllHostApartment(host_username);
+		List<AdDTO> ret = new ArrayList<AdDTO>();
+	    Comparator<Apartment> compareByCost = (Apartment o1, Apartment o2) -> Double.compare(o1.getPrice(), o2.getPrice());
+	    if(type.equals("asceding")) {
+	    	Collections.sort(temp, compareByCost);
+	    }else {
+	    	Collections.sort(temp, compareByCost.reversed());
+	    }
+	    for(Apartment a: temp) {
+	    	   AdDTO ad = new AdDTO();
+		       ad.setId(a.getId());
+		       ad.setAddress(a.getLocation().getAddress());
+		       ad.setImg("./images/"+a.getImages().get(0));
+		       ad.setDescription("maksimalan kapacitet: "+a.getGuestsNumber()+"<br />"+
+		                         "cena od: "+a.getPrice()+" RSD");
+		       ret.add(ad);   
+	    }
+	    return ret;
+	}
+	
+	////FILTRIRANI HOST
+	public Collection<AdDTO> getFilterHost(String type, String status, List<String>sadrzaj, String host_username){
+		List<Apartment> temp = findAllHostApartment(host_username);
+		List<AdDTO> ret = new ArrayList<AdDTO>();
+		boolean fleg = true;
+		for(Apartment a: temp) {
+			if(a.getType().toLowerCase().contains(type.toLowerCase())) {
+				if(a.getStatus().toLowerCase().contains(status.toLowerCase())) {
+					if(!sadrzaj.isEmpty()) {
+						fleg = checkAmentiesIntoApartment(sadrzaj,a.getId());
+					}
+					if(fleg) {
+						System.out.println("usla u dod");
+						 AdDTO ad = new AdDTO();
+					       ad.setId(a.getId());
+					       ad.setAddress(a.getLocation().getAddress());
+					       ad.setImg("./images/"+a.getImages().get(0));
+					       ad.setDescription("maksimalan kapacitet: "+a.getGuestsNumber()+"<br />"+
+					                         "cena od: "+a.getPrice()+" RSD");
+					       ret.add(ad); 
+					}
+				}
+			}
+		}
+		return ret;
+	}
+	
+	
+	public boolean checkAmentiesIntoApartment(List<String>filter, Long id) {
+		System.out.println("usla u am");
+		List<String> apartment_amenties = getAmentiesFromApartment(id);
+		for(String s: filter) {
+			System.out.println("provera: "+s);
+			if(!apartment_amenties.contains(s)) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	
+	
+	public Collection<Apartment> getSort(String type, List<Apartment>ret){
+		//List<Apartment> ret = findNotDeletedApartment();
 	    Comparator<Apartment> compareByCost = (Apartment o1, Apartment o2) -> Double.compare(o1.getPrice(), o2.getPrice());
 	    if(type.equals("asceding")) {
 	    	Collections.sort(ret, compareByCost);
@@ -135,25 +353,32 @@ public class ApartmentDAO {
 	
 	
 	
-	public Collection<AdDTO> getSearchApartment(String dO, String dD, String cO, String cD, String sO, String sD, String o){
-		ArrayList<AdDTO>ret = new ArrayList<AdDTO>();
+	public Collection<AdDTO> getSearchApartment(List<Apartment>aps, String dO, String dD, String cO, String cD, String sO, String sD, String o,
+			                                    String c,String dr, String tip_sort){
+		List<Apartment>retTemp = new ArrayList<Apartment>();
+		List<AdDTO>ret = new ArrayList<AdDTO>();
 		List<String> datesOpseg = getDaysBetweenDates(dO,dD);
-		for(Apartment a: apartments.values()) {
+		for(Apartment a: aps){
 			if(opsegDate(datesOpseg,a.getRentDates())) {  //promeni ovde available dates
-				System.out.println("cene");
 				if(opsegCena(a.getPrice(),cO,cD)) {
-					System.out.println("sobe");
 					if(opsegSoba(a.getRoomsNumber(),sO,sD)) {
-						System.out.println("osobe");
-						if(o.length()>0) {
-							int brojOsoba = Integer.parseInt(o);	
-							if(brojOsoba == a.getGuestsNumber()) {  
-								 AdDTO temp = new AdDTO(a);
-								 ret.add(temp);
+						if(c.equals("") || a.getCity().equals(c)) {
+							if(dr.equals("") || a.getCountry().equals(dr)) {
+								if(o.length()>0) {
+									int brojOsoba = Integer.parseInt(o);	
+									if(brojOsoba == a.getGuestsNumber()) {  
+										// AdDTO temp = new AdDTO(a);
+										 retTemp.add(a);
+									}
+								}else {
+									 //AdDTO temp = new AdDTO(a);
+									 retTemp.add(a);
+								}
+							}else { //nije to ta drzava
+								
 							}
-						}else {
-							 AdDTO temp = new AdDTO(a);
-							 ret.add(temp);
+						}else { //nije to taj grad
+							
 						}
 					}else { //broj soba nije u opsegu
 					
@@ -164,7 +389,16 @@ public class ApartmentDAO {
 			}else {  //datum nije u opsegu
 				
 			}
-		}	
+		}
+		//ako imam neke pretrazene->sortiraj i pretvori u AdDTO
+		if(!retTemp.isEmpty()) {
+			getSort(tip_sort, retTemp);
+			for(Apartment a: retTemp) {
+				AdDTO temp = new AdDTO(a);
+				ret.add(temp);
+			}
+		}
+		
 		return ret;
 	}
 	
@@ -282,9 +516,55 @@ public class ApartmentDAO {
 		return flag;
 	}
 	
+	public void changeApartment(ChangeDTO apartment){
+		System.out.println("--izmena apartmana--");
+		
+		String type = apartment.getTip_apartmana();
+		int roomsNumber = Integer.parseInt(apartment.getBroj_soba());
+		int guestsNumber = Integer.parseInt(apartment.getBroj_gostiju());
+		
+		//System.out.println(type+" "+roomsNumber+" "+guestsNumber);
+		
+		ArrayList<String> slike = new ArrayList<String>();
+		slike.add("app1.jpg");
+		slike.add("app2.jpg");
+		slike.add("app3.jpg");
+		double price = Double.parseDouble(apartment.getPrice());	
+		String v_prijave = apartment.getPrijava();
+		String v_odjave = apartment.getOdjava();
+		
+		List<String>sadrzaj = apartment.getSadrzaj();
+		ArrayList<Long>amenties =  new ArrayList<Long>();
+		for(String s : sadrzaj) {
+			long l = Integer.parseInt(s);
+			amenties.add(l);
+		}
+		
+		ArrayList<String> datumi = new ArrayList<String>();
+		String datum = apartment.getDatumi();
+		String[]dates = datum.split(",");
+		for(int i=0; i<dates.length; i++) {
+			datumi.add(dates[i]);
+		}
+		
+	    
+		Apartment a = findApartmentById(apartment.getId_apartmana());
+		a.setType(type);
+		a.setRoomsNumber(roomsNumber);
+		a.setGuestsNumber(guestsNumber);
+		a.setImages(slike);
+		a.setPrice(price);
+		a.setCheck_in_time(v_prijave);
+		a.setCheck_out_time(v_odjave);
+		a.setAvailableDates(datumi);
+		a.setAmenties(amenties);
+	    saveApartments();
+	}
 	
 	
-	public void addApartment(ApartmentDTO apartment) {
+	
+	
+	public void addApartment(ApartmentDTO apartment, String host) {
 		System.out.println("--dodavanje apartmana--");
 		
 		String type = apartment.getTip_apartmana();
@@ -303,7 +583,7 @@ public class ApartmentDAO {
 		//System.out.println(latitude + " "+longitude+" "+zip);
 		Location location = new Location(latitude, longitude, street, homeNumber,city,zip);
 		
-		String host_username = apartment.getDomacin();		
+		String host_username = "";		
 		ArrayList<String> slike = (ArrayList<String>) apartment.getSlike();
 		double price = Double.parseDouble(apartment.getPrice());	
 		String v_prijave = apartment.getPrijava();
@@ -326,6 +606,9 @@ public class ApartmentDAO {
 		Apartment a = new Apartment(type,roomsNumber,guestsNumber,location,datumi,host_username,slike,price,amenties,v_prijave,v_odjave);
 		a.setId(apartments.size()+1);
 	    a.setStatus("INACTIVE");
+	    a.setCity(city);
+	    a.setCountry("Srbija");
+	    a.setHost_username(host);
 	    apartments.put(a.getId(),a);
 	    saveApartments();
 	}
@@ -377,13 +660,13 @@ public class ApartmentDAO {
 		        obj_apartment.put("host",a.getHost_username());
 		        
 		        
-		        JSONArray comments = new JSONArray();
+		      /*  JSONArray comments = new JSONArray();
 		        if(!a.getComments().isEmpty()) {
 		        	for(Comment c: a.getComments()) {
 		        		comments.add(c.getId());
 		        	}
 		        }
-		        obj_apartment.put("comments", comments);
+		        obj_apartment.put("comments", comments);*/
 		    	
 		    	JSONArray images = new JSONArray();
 		    	if(!a.getImages().isEmpty()) {
@@ -408,11 +691,16 @@ public class ApartmentDAO {
 		    	
 		    	JSONArray reservations = new JSONArray();
 		    	if(!a.getReservations().isEmpty()) {
-		    		for(Reservation r: a.getReservations()) {
-		    			reservations.add(r.getId());
+		    		for(Long r: a.getReservations()) {
+		    			reservations.add(r);
 		    		}
 		    	}
 		    	obj_apartment.put("reservations", reservations);
+		    	
+		    	obj_apartment.put("active", a.isActive());
+		    	obj_apartment.put("city", a.getCity());
+		    	obj_apartment.put("country", a.getCountry());
+		    	
 		    	
 		    	list_apartments.add(obj_apartment);
 		 } try {
@@ -476,14 +764,14 @@ public class ApartmentDAO {
 				a.setHost_username((String)jsonObject.get("host"));
 				a.setType((String)jsonObject.get("type"));
 				
-				JSONArray aComments = (JSONArray) jsonObject.get("comments");
+				/*JSONArray aComments = (JSONArray) jsonObject.get("comments");
 				List<Comment> comments = new ArrayList<Comment>();
 				Iterator<String> iter3 = aComments.iterator();
 				while(iter3.hasNext()) {
 					String d = (String) iter3.next();	
-					//comments.add(d);
+					comments.add(d);
 				}
-				a.setComments(comments);
+				a.setComments(comments);*/
 				
 				
 				JSONArray imagesJSON = (JSONArray) jsonObject.get("images");
@@ -494,6 +782,7 @@ public class ApartmentDAO {
 					images.add(img);
 				}
 				a.setImages(images);
+				System.out.println("UCITAVANJE"+images.size());
 				
 				a.setPrice((double)jsonObject.get("price"));
 				a.setCheck_in_time((String)jsonObject.get("check_in"));
@@ -507,8 +796,23 @@ public class ApartmentDAO {
 					long d = (long)iter5.next();
 					ament.add(d);
 				}
+				a.setAmenties(ament);
 				
-				//reservations
+				
+				JSONArray reservations = (JSONArray) jsonObject.get("reservations");
+				List<Long> res = new ArrayList<Long>();
+				Iterator<Long> iter6 = reservations.iterator();
+				while(iter6.hasNext()) {
+					long d = (long)iter6.next();
+					res.add(d);
+				}
+				a.setReservations(res);
+				
+				
+				a.setActive((boolean) jsonObject.get("active"));
+				a.setCity((String)jsonObject.get("city"));
+				a.setCountry((String)jsonObject.get("country"));
+				
 				apartments.put(a.getId(),a);
 			}
 

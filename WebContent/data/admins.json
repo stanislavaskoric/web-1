@@ -4,6 +4,15 @@
   "firstName" : "jeka",
   "lastName" : "dragisic",
   "gender" : "female",
+  "blocked" : false,
+  "role" : "ADMIN"
+ },
+  {"username" : "admin1",
+  "password" : "admin",
+  "firstName" : "jelena",
+  "lastName" : "dragisic",
+  "gender" : "female",
+  "blocked" : false,
   "role" : "ADMIN"
  }
 

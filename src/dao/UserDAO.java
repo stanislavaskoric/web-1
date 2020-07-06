@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 import beans.Admin;
 import beans.Apartment;
@@ -29,6 +30,7 @@ public class UserDAO {
 	private HashMap<String, Admin> admins;
 	private HashMap<String, Host> hosts;
 	private HashMap<String, Guest> guests;
+	private HashMap<String, User> systemUsers;
 	private String path;                       
 	
 	
@@ -36,6 +38,7 @@ public class UserDAO {
 		this.admins = new HashMap<String, Admin>();
 		this.hosts = new HashMap<String, Host>();
 		this.guests = new HashMap<String, Guest>();
+		this.systemUsers = new HashMap<String, User>();
 		System.out.println("HEREEEEEE"+path);
 		this.setPath(path);
 		System.out.println(path);
@@ -78,8 +81,17 @@ public class UserDAO {
 	}
 	
 	
+	public HashMap<String, User> getSystemUsers() {
+		return systemUsers;
+	}
+
+	public void setSystemUsers(HashMap<String, User> systemUsers) {
+		this.systemUsers = systemUsers;
+	}
+
 	public User addUser(User user) {
 		System.out.println("---add user---");
+		systemUsers.put(user.getUsername(), user);
 		String username = user.getUsername();
 		if((admins.get(username)==null) && (hosts.get(username)==null) && (guests.get(username)==null)) {
 			if(user.getRole().equals("HOST")) {
@@ -103,6 +115,21 @@ public class UserDAO {
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public Host createHost(User user) {
+		System.out.println("---add host---");
+		systemUsers.put(user.getUsername(), user);
+		Host host = null;
+		String username = user.getUsername();
+		if((admins.get(username)==null) && (hosts.get(username)==null) && (guests.get(username)==null)) {
+				addHost(user);		
+				host = new Host(user);
+		}else {
+			System.out.println("username vec postoji u sistemu");
+			host = null;  
+		}
+		return host;
 	}
 	
 	public void addGuest(User user) {
@@ -131,6 +158,7 @@ public class UserDAO {
 		    	obj.put("firstName",host.getFirstName());
 		    	obj.put("lastName",host.getLastName());
 		    	obj.put("gender", host.getGender());
+		    	obj.put("blocked",host.isBlocked());
 		    	obj.put("role",host.getRole());
 		    	if(!host.getRentApartments().isEmpty()){
 		    		for(Apartment a: host.getRentApartments()) {
@@ -166,6 +194,7 @@ public class UserDAO {
 		    	obj.put("firstName",guest.getFirstName());
 		    	obj.put("lastName",guest.getLastName());
 		    	obj.put("gender", guest.getGender());
+		    	obj.put("blocked", guest.isBlocked());
 		    	obj.put("role",guest.getRole());
 		    	if(!guest.getRentedApartments().isEmpty()){
 		    		for(Apartment a: guest.getRentedApartments()) {
@@ -215,7 +244,10 @@ public class UserDAO {
 				user.setFirstName((String) jsonObject.get("firstName"));
 				user.setLastName((String) jsonObject.get("lastName"));
 				user.setGender((String) jsonObject.get("gender"));
+				user.setBlocked((boolean) jsonObject.get("blocked"));
 				user.setRole((String)jsonObject.get("role"));
+				
+				systemUsers.put(user.getUsername(), user);
 				
 				if(user.getRole().equals("HOST")) {
 					Host h = new Host(user);
@@ -251,6 +283,8 @@ public class UserDAO {
 			e.printStackTrace();
 		}
 	 }
+	
+	
 
 	public User find(String username) {
         User user = new User();
@@ -262,20 +296,19 @@ public class UserDAO {
         		if( guest == null) {
         			user = null;
         		}else {
-        			user = new User(guest.getUsername(),guest.getPassword(),guest.getFirstName(),guest.getLastName(),guest.getGender());
+        			user = new User(guest.getUsername(),guest.getPassword(),guest.getFirstName(),guest.getLastName(),guest.getGender(),guest.isBlocked());
         		    user.setRole("GUEST");
         		}
         	}else {
-        		user = new User(host.getUsername(),host.getPassword(),host.getFirstName(),host.getLastName(),host.getGender());
+        		user = new User(host.getUsername(),host.getPassword(),host.getFirstName(),host.getLastName(),host.getGender(),host.isBlocked());
         	    user.setRole("HOST");
         	}
         }else {
         	user = (User)admin;
         }
-        if(user!=null)
-        	System.out.println(user.getUsername() + user.getRole() + user.getPassword());
         return user;
 	}
+	
 	
 	public Guest findGuest(String username) {
 		System.out.println("---find guest---");
@@ -286,39 +319,24 @@ public class UserDAO {
 		return g;
 	}
 	
+	
 	public Collection<User> searchUser(String username, String gender, String role){
-		System.out.println("---search user---");
-		System.out.println(username + gender + role);
-		ArrayList<User> returnList = new ArrayList<User>();
-		for(Admin a: admins.values()) {	
-			if(a.getUsername().toLowerCase().contains(username.toLowerCase())) {
-				if(a.getGender().toLowerCase().contains(gender.toLowerCase())) {
-					if(a.getRole().toLowerCase().contains(role.toLowerCase())) {
-						returnList.add((User)a);
+		System.out.println("---search user by admin---");
+		List<User> returnList = new ArrayList<User>();
+		if(username ==null && gender==null && role==null) {
+			return returnList;
+		}
+        
+		for(User u: systemUsers.values()) {
+			if(username.equals(u.getUsername()) || username.equals("")) {
+				if(gender.equals(u.getGender()) || gender.equals("")) {
+					if(role.toUpperCase().equals(u.getRole().toUpperCase()) || role.equals("")) {
+						returnList.add(u);
 					}
 				}
-			}	
+			}
 		}
-		for(Host h: hosts.values()) {
-			if(h.getUsername().toLowerCase().contains(username.toLowerCase())) {
-				if(h.getGender().toLowerCase().contains(gender.toLowerCase())) {
-					if(h.getRole().toLowerCase().contains(role.toLowerCase())) {
-						returnList.add((User)h);
-					}
-				}
-			}	
-		}
-		for(Guest g: guests.values()) {
-			if(g.getUsername().toLowerCase().contains(username.toLowerCase())) {
-				if(g.getGender().toLowerCase().contains(gender.toLowerCase())) {
-					if(g.getRole().toLowerCase().contains(role.toLowerCase())) {
-						User user = new User();
-						user = (User)g;
-						returnList.add(user);
-					}
-				}
-			}	
-		}
+		
 		
 		return returnList;
 	}
@@ -336,5 +354,30 @@ public class UserDAO {
 	}
 	
 	
+	public User findUserByName(String username) {
+		return systemUsers.get(username);
+	}
+	
+	public void blockedGuest(String username) {
+		Guest g = guests.get(username);
+		g.setBlocked(true);
+		saveGuests();
+	}
+	
+	public void blockedHost(String username) {
+		Host h = hosts.get(username);
+		h.setBlocked(true);
+		saveHosts();
+	}
+	
+	public void blocked(String username) {
+		User u = findUserByName(username);
+		u.setBlocked(true);
+		if(u.getRole().equals("GUEST")) {
+			blockedGuest(username);
+		}else {
+			blockedHost(username);
+		}
+	}
 	
 }

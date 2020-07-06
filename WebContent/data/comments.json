@@ -1,0 +1,42 @@
+[
+	{
+		"evaluation": 5,
+		"odabran": false,
+		"guest": "guest1",
+		"id": 1,
+		"text": "okeeej",
+		"apartment": 1
+	},
+	{
+		"evaluation": 7,
+		"odabran": true,
+		"guest": "guest1",
+		"id": 2,
+		"text": "divno",
+		"apartment": 1
+	},
+	{
+		"evaluation": 6,
+		"odabran": true,
+		"guest": "guest1",
+		"id": 3,
+		"text": "ok",
+		"apartment": 1
+	},
+	{
+		"evaluation": 5,
+		"odabran": false,
+		"guest": "guest1",
+		"id": 4,
+		"text": "okeeej",
+		"apartment": 2
+	},
+	{
+		"evaluation": 1,
+		"odabran": true,
+		"guest": "guest1",
+		"id": 5,
+		"text": "uzas",
+		"apartment": 1
+	}
+]

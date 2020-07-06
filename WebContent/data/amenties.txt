@@ -4,3 +4,4 @@
 4;Pegla;true;
 5;Tus kabina;true;
 6;Kada;true
+7;Posteljina;true

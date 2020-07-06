@@ -3,14 +3,16 @@ package beans;
 public class Comment {
 	
 	private long id;
-	private Guest guest;
-	private Apartment apartment;
+	private String guest_username;
+	private Long apartment_id;
 	private String text;
 	private int evaluation;
+	private boolean odabran;
 
 	
 	public Comment() {
 		super();
+		this.odabran = false;
 	}
 
 	
@@ -22,20 +24,20 @@ public class Comment {
 		this.id = id;
 	}
 
-	public Guest getGuest() {
-		return guest;
+	public String getGuest() {
+		return guest_username;
 	}
 
-	public void setGuest(Guest guest) {
-		this.guest = guest;
+	public void setGuest(String guest_username) {
+		this.guest_username = guest_username;
 	}
 
-	public Apartment getApartment() {
-		return apartment;
+	public Long getApartment() {
+		return apartment_id;
 	}
 
-	public void setApartment(Apartment apartment) {
-		this.apartment = apartment;
+	public void setApartment(Long apartment_id) {
+		this.apartment_id = apartment_id;
 	}
 
 	public String getText() {
@@ -52,6 +54,16 @@ public class Comment {
 
 	public void setEvaluation(int evaluation) {
 		this.evaluation = evaluation;
+	}
+
+
+	public boolean isOdabran() {
+		return odabran;
+	}
+
+
+	public void setOdabran(boolean odabran) {
+		this.odabran = odabran;
 	}
 	
 	

@@ -20,6 +20,7 @@ public class Host extends User{
 		this.setLastName(u.getLastName());
 		this.setGender(u.getGender());
 		this.setPassword(u.getPassword());
+		this.setBlocked(u.isBlocked());
 		this.setRole("HOST");
 		this.rentApartments = new ArrayList<Apartment>();
 	}

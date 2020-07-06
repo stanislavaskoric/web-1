@@ -22,6 +22,7 @@ public class Guest extends User {
 		this.setGender(u.getGender());
 		this.setUsername(u.getUsername());
 		this.setPassword(u.getPassword());
+		this.setBlocked(u.isBlocked());
 		this.setRole("GUEST");
         this.rentedApartments = new ArrayList<Apartment>();
         this.reservations = new ArrayList<Reservation>();

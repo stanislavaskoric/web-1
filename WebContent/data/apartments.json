@@ -1,39 +1,190 @@
-[{"images":["app1.jpg","app12.jpg","app13.jpg"],
- "comments":[],
- "roomsNumber":5,
- "rDates":["24\/06\/2020","25\/06\/2020","26\/06\/2020","27\/06\/2020","28\/06\/2020","29\/06\/2020"],
- "check_in":"13:49","type":"apartman","guestsNumber":8,"amenties":[1,7],
- "check_out":"22:52",
- "reservations":[],
- "aDates":["24\/06\/2020","25\/06\/2020","26\/06\/2020","27\/06\/2020","28\/06\/2020","29\/06\/2020"],
- "price":7.0,
- "host":"host1",
- "location":{"address":" Jevrejska 3, Novi Sad 21101","latitude":2208733.19765982,"longitude":2208733.19765982},
- "id":1,
- "status":"INACTIVE"},
- {"images":["app1.jpg","app12.jpg","app13.jpg"],
- "comments":[],
- "roomsNumber":6,
- "rDates":["24\/06\/2020","25\/06\/2020","26\/06\/2020","27\/06\/2020","28\/06\/2020","29\/06\/2020"],
- "aDates":["24\/06\/2020","25\/06\/2020","26\/06\/2020","27\/06\/2020","28\/06\/2020","29\/06\/2020"],
- "check_in":"13:49","type":"apartman","guestsNumber":8,"amenties":[1,7],
- "check_out":"22:52",
- "reservations":[],
- "price":8.0,
- "host":"host1",
- "location":{"address":" Jevrejska 3, Novi Sad 21101","latitude":2208733.19765982,"longitude":2208733.19765982},
- "id":2,
- "status":"INACTIVE"},
-  {"images":["app1.jpg","app12.jpg","app13.jpg"],
- "comments":[],
- "roomsNumber":6,
- "rDates":["24\/06\/2020","25\/06\/2020","26\/06\/2020","27\/06\/2020","28\/06\/2020","29\/06\/2020"],
- "check_in":"13:49","type":"apartman","guestsNumber":8,"amenties":[1,7],
- "check_out":"22:52",
- "reservations":[],
- "aDates":["24\/06\/2020","25\/06\/2020","26\/06\/2020","27\/06\/2020","28\/06\/2020","29\/06\/2020"],
- "price":3.5,
- "host":"host1",
- "location":{"address":" Jevrejska 3, Novi Sad 21101","latitude":2208733.19765982,"longitude":2208733.19765982},
- "id":3,
- "status":"INACTIVE"}]
+[
+	{
+		"images": [
+			"app52.jpg",
+			"app53.jpg",
+			"app44.jpg"
+		],
+		"comments": [],
+		"roomsNumber": 5,
+		"rDates": [
+			"24\/07\/2020",
+			"25\/07\/2020",
+			"26\/07\/2020",
+			"27\/07\/2020",
+			"28\/07\/2020",
+			"29\/07\/2020"
+		],
+		"check_in": "13:49",
+		"type": "apartman",
+		"guestsNumber": 2,
+		"amenties": [
+			1,
+			7
+		],
+		"check_out": "22:52",
+		"reservations": [],
+		"aDates": [
+			"24\/07\/2020",
+			"25\/07\/2020",
+			"26\/07\/2020",
+			"27\/07\/2020",
+			"28\/07\/2020",
+			"29\/07\/2020"
+		],
+		"price": 1800.0,
+		"host": "host1",
+		"location": {
+			"address": " Petra Drapsina 26, Novi Sad 21101",
+			"latitude": 2208733.19765982,
+			"longitude": 2208733.19765982
+		},
+		"id": 1,
+		"city": "Novi Sad",
+		"country" : "Vojvodina",
+		"status": "ACTIVE",
+		"active": true
+	},
+	{
+		"images": [
+			"app44.jpg",
+			"app42.jpg",
+			"app43.jpg"
+		],
+		"comments": [],
+		"roomsNumber": 6,
+		"rDates": [
+			"24\/07\/2020",
+			"25\/07\/2020",
+			"26\/07\/2020",
+			"27\/07\/2020",
+			"28\/07\/2020",
+			"29\/07\/2020"
+		],
+		"aDates": [
+			"24\/07\/2020",
+			"25\/07\/2020",
+			"26\/07\/2020",
+			"27\/07\/2020",
+			"28\/07\/2020",
+			"29\/07\/2020"
+		],
+		"check_in": "13:49",
+		"type": "apartman",
+		"guestsNumber": 4,
+		"amenties": [
+			1,
+			5,
+			3,
+			7,
+			4
+		],
+		"check_out": "22:52",
+		"reservations": [],
+		"price": 2500.0,
+		"host": "host1",
+		"location": {
+			"address": "Pionirska 3, Banja Luka 21101",
+			"latitude": 2208733.19765982,
+			"longitude": 2208733.19765982
+		},
+		"id": 2,
+		"city": "Banja Luka",
+		"country" : "Bosna",
+		"status": "ACTIVE",
+		"active": true
+	},
+	{
+		"images": [
+			"app33.jpg",
+			"app24.jpg",
+			"app22.jpg"
+		],
+		"comments": [],
+		"roomsNumber": 6,
+		"rDates": [
+			"24\/07\/2020",
+			"25\/07\/2020",
+			"26\/07\/2020",
+			"27\/07\/2020",
+			"28\/07\/2020",
+			"29\/07\/2020"
+		],
+		"check_in": "13:49",
+		"type": "apartman",
+		"guestsNumber": 3,
+		"amenties": [
+			2,
+			7,
+			4
+		],
+		"check_out": "22:52",
+		"reservations": [],
+		"aDates": [
+			"24\/07\/2020",
+			"25\/07\/2020",
+			"26\/07\/2020",
+			"27\/07\/2020",
+			"28\/07\/2020",
+			"29\/07\/2020"
+		],
+		"price": 3500.0,
+		"host": "host1",
+		"location": {
+			"address": " Dusana Savica, Novi Sad 21101",
+			"latitude": 2208733.19765982,
+			"longitude": 2208733.19765982
+		},
+		"id": 3,
+		"city": "Novi Sad",
+		"country" : "Srbija",
+		"status": "ACTIVE",
+		"active": true
+	},
+	{
+		"images": [
+			"app1.jpg",
+			"app12.jpg",
+			"app13.jpg"
+		],
+		"comments": [],
+		"roomsNumber": 5,
+		"rDates": [
+			"24\/07\/2020",
+			"25\/07\/2020",
+			"26\/07\/2020",
+			"27\/07\/2020",
+			"28\/07\/2020",
+			"29\/07\/2020"
+		],
+		"check_in": "13:49",
+		"type": "apartman",
+		"guestsNumber": 8,
+		"amenties": [
+			1,
+			7
+		],
+		"check_out": "22:52",
+		"reservations": [],
+		"aDates": [
+			"24\/07\/2020",
+			"25\/07\/2020",
+			"26\/07\/2020",
+			"27\/07\/2020",
+			"28\/07\/2020",
+			"29\/07\/2020"
+		],
+		"price": 1900.0,
+		"host": "host2",
+		"location": {
+			"address": " Jevrejska 3, Novi Sad 21101",
+			"latitude": 2208733.19765982,
+			"longitude": 2208733.19765982
+		},
+		"id": 4,
+		"city": "Novi Sad",
+		"country" : "Srbija",
+		"status": "ACTIVE",
+		"active": true
+	}
+]
