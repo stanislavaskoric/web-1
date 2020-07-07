@@ -8,7 +8,7 @@
 		"apartment": 1,
 		"startDate": "06\/24\/2020",
 		"status": "ACCEPT",
-		"finish": true
+		"finish": false
 	},
 	{
 		"finalPrice": 1200.6,
