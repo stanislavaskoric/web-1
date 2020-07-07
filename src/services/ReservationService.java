@@ -202,6 +202,7 @@ public class ReservationService {
 	public Collection<User> getAllHostUsers(){
 		System.out.println("***Get users by host***");
 		User user = (User) request.getSession(false).getAttribute("user");
+		System.out.println(user.getUsername());
 		ReservationDAO reservations = (ReservationDAO) servletContext.getAttribute("reservations");
 		return reservations.getAllUserByHost(user.getUsername());
 	}

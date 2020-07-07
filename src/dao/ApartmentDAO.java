@@ -605,7 +605,7 @@ public class ApartmentDAO {
 		
 		Apartment a = new Apartment(type,roomsNumber,guestsNumber,location,datumi,host_username,slike,price,amenties,v_prijave,v_odjave);
 		a.setId(apartments.size()+1);
-	    a.setStatus("INACTIVE");
+	    a.setStatus("ACTIVE");
 	    a.setCity(city);
 	    a.setCountry("Srbija");
 	    a.setHost_username(host);

@@ -41,7 +41,7 @@
 		},
 		"id": 1,
 		"city": "Novi Sad",
-		"country" : "Vojvodina",
+		"country" : "Srbija",
 		"status": "ACTIVE",
 		"active": true
 	},
@@ -175,7 +175,7 @@
 			"29\/07\/2020"
 		],
 		"price": 1900.0,
-		"host": "host2",
+		"host": "host1",
 		"location": {
 			"address": " Jevrejska 3, Novi Sad 21101",
 			"latitude": 2208733.19765982,
@@ -184,7 +184,7 @@
 		"id": 4,
 		"city": "Novi Sad",
 		"country" : "Srbija",
-		"status": "ACTIVE",
+		"status": "INACTIVE",
 		"active": true
 	}
 ]
