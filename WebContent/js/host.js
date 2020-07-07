@@ -105,6 +105,13 @@ $(document).ready(function(){
 	/**********************DODAVANJE INFO O APARTMANU************************************************************/
 	
 	$('#button_inputNewApartment').on("click",function(){
+		$('#tip_apartmana').val('');
+		$('#numberRooms').val('');
+		$('#numberGuests').val('');
+		$('#costsPerNight').val('');
+		$('#Dates').val('');
+		$('#timeIn').val('');
+		$('#timeOut').val('');
 		  console.log("klik na add info apartment");
 		  $('#myAddApartmentModal').show();
 		  $('#addApartmentError').text("");

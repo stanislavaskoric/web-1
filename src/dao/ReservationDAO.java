@@ -163,7 +163,7 @@ public class ReservationDAO {
 			Apartment a = apartments.get(r.getApartment());
 			if(a.getHost_username().equals(u)) {
 				if(!r.isFinish()) {
-					//finishReservation(r.getId());	
+					finishReservation(r.getId());	
 				}
 				ret.add(r);
 			}

@@ -2,13 +2,13 @@
 	{
 		"finalPrice": 3500.0,
 		"nightsNumber": 2,
-		"guest": "guest2",
+		"guest": "guest1",
 		"id": 1,
 		"message": "frfrf",
 		"apartment": 1,
 		"startDate": "06\/24\/2020",
-		"status": "COMPLETED",
-		"finish": false
+		"status": "ACCEPT",
+		"finish": true
 	},
 	{
 		"finalPrice": 1200.6,
@@ -39,7 +39,7 @@
 		"id": 4,
 		"message": "jjf",
 		"apartment": 3,
-		"startDate": "06\/25\/2020",
+		"startDate": "07\/21\/2020",
 		"status": "ACCEPT",
 		"finish": false
 	},
@@ -50,8 +50,8 @@
 		"id": 5,
 		"message": "hrhrh",
 		"apartment": 3,
-		"startDate": "06\/25\/2020",
+		"startDate": "08\/25\/2020",
 		"status": "CREATE",
-		"finish": true
+		"finish": false
 	}
 ]
